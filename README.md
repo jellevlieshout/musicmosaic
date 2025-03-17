@@ -1,4 +1,4 @@
-# DH2642, group 20, project proposal
+# vt25-Project
 Grading criteria: [https://docs.google.com/document/d/1luWXvJT\_WEqAl4P2Fg3hNTVBOaEBdAbKADENtYJE3oo/edit?tab=t.0](https://docs.google.com/document/d/1luWXvJT_WEqAl4P2Fg3hNTVBOaEBdAbKADENtYJE3oo/edit?tab=t.0)
 ## Group member names and Canvas IDs
 * Joachim Olsson, 114913
