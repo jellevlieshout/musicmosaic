@@ -6,7 +6,7 @@ import { create } from 'zustand' // used to create stores (store = place where u
  */
 
 type Song = {
-    id: number
+    id: string
     title: string
     artist: string
     album: string
