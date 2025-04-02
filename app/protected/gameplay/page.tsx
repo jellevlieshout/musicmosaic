@@ -1,4 +1,5 @@
 'use client'
+import './styles.css';
 import { Player, useGameplayStore } from "@/stores/hitsterModelStore";
 import { demoPlayers } from "@/stores/demoPlayers";
 
@@ -23,7 +24,7 @@ export default function GameplayPage() {
                 </ul>
             </div>
 	    <div>
-		<button onClick={handleAddDemoPlayersClick} type="button">Add demo players</button>
+		<button className="rounded-button" onClick={handleAddDemoPlayersClick} type="button">Add demo players</button>
 	    </div>
         </div>
     )
