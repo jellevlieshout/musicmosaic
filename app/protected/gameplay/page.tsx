@@ -1,3 +1,4 @@
+'use client'
 import { useGameplayStore } from "@/stores/hitsterModelStore";
 
 export default function GameplayPage() {
