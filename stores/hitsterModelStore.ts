@@ -5,7 +5,7 @@ import { create } from 'zustand' // used to create stores (store = place where u
  * Define types since we're working in typescript
  */
 
-type Song = {
+export type Song = {
     id: string
     title: string
     artist: string
@@ -14,18 +14,18 @@ type Song = {
     hasBeenPlayed?: boolean
 }
 
-type Player = {
-    id: number
+export type Player = {
+    id: string
     name: string
     highestScore: number | null
     deck: Song[]
 }
 
-type GameplayState = {
+export type GameplayState = {
     currentPlayers: Player[] | null
-    currentPlayerId: number | null
+    currentPlayerId: string | null
     currentPlaylist: Song[] | null
-    currentSongId: number | null
+    currentSongId: string | null
 
     setPlaylist: (playlist: Song[]) => void
     seatPlayersInRandomOrder: (players: Player[]) => void
@@ -35,7 +35,7 @@ type GameplayState = {
     // playerWasWrong: () => void
 }
 
-export const useGameplayStore = create<GameplayState>((set, get) => ({
+export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     currentPlayers: null,
     currentPlayerId: null,
     currentPlaylist: null,
@@ -61,22 +61,22 @@ export const useGameplayStore = create<GameplayState>((set, get) => ({
         const { currentPlaylist } = get()
         if (!currentPlaylist) 
             return
-        const unheardSongs = currentPlaylist.filter(song => !song.hasBeenPlayed)
+        const unheardSongs = currentPlaylist.filter((song: Song) => !song.hasBeenPlayed)
         if (unheardSongs.length === 0) {
             console.log("We ran out of new songs!")
             return
         }
 
         const randomSong = unheardSongs[Math.floor(Math.random() * unheardSongs.length)]
-        const updatedPlaylist = currentPlaylist.map(song =>
+        const updatedPlaylist = currentPlaylist.map((song: Song) =>
             song.id === randomSong.id ? { ...song, hasBeenPlayed: true } : song
         )
 
         const { currentPlayers, currentPlayerId } = get()
-        const player = currentPlayers?.find(p => p.id === currentPlayerId)
+        const player = currentPlayers?.find((p: Player) => p.id === currentPlayerId)
 
         console.log(`${player?.name}'s time to shine!`)
-        player?.deck.forEach(song => console.log(song.year, song.title))
+        player?.deck.forEach((song: Song) => console.log(song.year, song.title))
         console.log("Playing", randomSong.title)
 
         set({ currentPlaylist: updatedPlaylist, currentSongId: Number(randomSong.id) })
