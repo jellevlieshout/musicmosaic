@@ -67,3 +67,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+    font-family: NeonTubes;
+    src: url(NeonTubes2.otf);
+}
+
+
+.neon-tubes-styling{
+    color: white;
+    font-family: NeonTubes, sans-serif;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #ff00de,
+        0 0 30px #ff00de,
+        0 0 40px #ff00de,
+        0 0 55px #ff00de,
+        0 0 75px #ff00de;
+}
