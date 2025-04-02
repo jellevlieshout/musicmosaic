@@ -5,7 +5,8 @@ import { demoPlayers } from "@/stores/demoPlayers";
 import { demoPlaylist } from "@/stores/demoPlaylist";
 
 export default function GameplayPage() {
-    const { seatPlayersInRandomOrder, setPlaylist, currentPlayers, currentPlayerId, currentPlaylist, currentSongId } = useGameplayStore();
+    const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist,
+            currentPlayers, currentPlayerId, currentPlaylist, currentSongId, unheardSongs } = useGameplayStore();
 
     function handleAddDemoPlayersClick(evt) {
         seatPlayersInRandomOrder(demoPlayers)
@@ -13,6 +14,13 @@ export default function GameplayPage() {
 
     function handleAddDemoPlaylistClick(evt) {
         setPlaylist(demoPlaylist)
+    }
+
+    function handlePlayClick(evt) {
+        playRandomNewSongFromCurrentPlaylist()
+    }
+
+    function handleStopClick(evt) {
     }
 
     return (
@@ -25,7 +33,12 @@ export default function GameplayPage() {
                 </div>
                     {currentPlaylist && currentPlaylist.length > 0 && (
                      <div>
-                         {currentPlaylist.length} {currentPlaylist.length === 1 ? 'song' : 'songs'} left to play!
+                         Loaded a playlist with {currentPlaylist.length} {currentPlaylist.length === 1 ? 'song' : 'songs'} 
+                     </div>
+                     )}
+                    {unheardSongs && unheardSongs.length > 0 && (
+                     <div>
+                         {unheardSongs.length} {unheardSongs.length === 1 ? 'Song' : 'Songs'} left to play
                      </div>
                      )}
             </div>
@@ -42,8 +55,8 @@ export default function GameplayPage() {
             </div>
             <div>
                 <h2>Music Player</h2>
-                <button className="neon-tubes-styling" style={{margin: '20px'}} type="button">Play</button>
-                <button className="neon-tubes-styling" style={{margin: '20px'}} type="button">Stop</button>
+                <button className="neon-tubes-styling" onClick={handlePlayClick} style={{margin: '20px'}} type="button">Play</button>
+                <button className="neon-tubes-styling" onClick={handleStopClick} style={{margin: '20px'}} type="button">Stop</button>
             </div>
         </div>
     )
