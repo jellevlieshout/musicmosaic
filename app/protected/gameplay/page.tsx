@@ -1,8 +1,14 @@
 'use client'
-import { useGameplayStore } from "@/stores/hitsterModelStore";
+import { Player, useGameplayStore } from "@/stores/hitsterModelStore";
+import { demoPlayers } from "@/stores/demoPlayers";
 
 export default function GameplayPage() {
-    const { currentPlayers, currentPlayerId, currentPlaylist, currentSongId } = useGameplayStore();
+    const { seatPlayersInRandomOrder, currentPlayers, currentPlayerId, currentPlaylist, currentSongId } = useGameplayStore();
+
+    function handleAddDemoPlayersClick(evt) {
+        seatPlayersInRandomOrder(demoPlayers)
+    }
+
     return (
         <div>
             <h1>Gameplay</h1>
@@ -14,6 +20,9 @@ export default function GameplayPage() {
                     ))}
                 </ul>
             </div>
+	    <div>
+		<button onClick={handleAddDemoPlayersClick} type="button">Add demo players</button>
+	    </div>
         </div>
     )
 }
