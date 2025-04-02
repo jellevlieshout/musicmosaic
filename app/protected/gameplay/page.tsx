@@ -16,7 +16,9 @@ export default function GameplayPage() {
                 <h2>Current Players</h2>
                 <ul>
                     {currentPlayers?.map((player: Player) => (
-                        <li key={player.id}>{player.name}</li>
+                        <li key={player.id} style={{ fontWeight: player.id === currentPlayerId ? 'bold' : 'normal' }}>
+                            {player.name}
+                        </li>
                     ))}
                 </ul>
             </div>
