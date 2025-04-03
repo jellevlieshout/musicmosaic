@@ -8,11 +8,13 @@ export default function GameplayPage() {
     const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist, stopPlayer,
             currentPlayers, currentPlayerId, currentPlaylist, currentSongId, isAudioPlayerRunning } = useGameplayStore();
 
-
-
     const unheardSongs = currentPlaylist?.filter((song: Song) => !song.hasBeenPlayed)
 
-    // const isPlayerRunning = false
+    const getSongTitleById = (songId: string) => {
+        const song = currentPlaylist?.find((song: Song) => song.id === songId);
+        return song ? song.title : null; // Return the song title or null if not found
+    }
+    const currentSongTitle = getSongTitleById(currentSongId)
 
     function handleAddDemoPlayersClick(evt) {
         seatPlayersInRandomOrder(demoPlayers)
@@ -29,7 +31,6 @@ export default function GameplayPage() {
     function handleStopClick(evt) {
         stopPlayer()
     }
-
 
     return (
         <div>
@@ -63,15 +64,15 @@ export default function GameplayPage() {
             </div>
             <div>
                 <h2>Music Player</h2>
-		<div>
+                <div>
                 <button className="neon-tubes-styling" onClick={handlePlayClick} style={{margin: '20px'}} type="button">Play</button>
                 <button className="neon-tubes-styling" onClick={handleStopClick} style={{margin: '20px'}} type="button">Stop</button>
-		</div>
-		    {isAudioPlayerRunning && currentSongId && (
+                </div>
+                    {isAudioPlayerRunning && currentSongId && currentSongTitle && (
                         <div>
-		            We are playing the song with ID {currentSongId}.
-			</div>
-		    )}
+                            We are playing the song with ID {currentSongId}, {currentSongTitle}
+                        </div>
+                    )}
             </div>
         </div>
     )
