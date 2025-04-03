@@ -6,7 +6,9 @@ import { demoPlaylist } from "@/stores/demoPlaylist";
 
 export default function GameplayPage() {
     const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist,
-            currentPlayers, currentPlayerId, currentPlaylist, currentSongId, unheardSongs } = useGameplayStore();
+            currentPlayers, currentPlayerId, currentPlaylist, currentSongId } = useGameplayStore();
+
+    const unheardSongs = currentPlaylist?.filter((song: Song) => !song.hasBeenPlayed)
 
     function handleAddDemoPlayersClick(evt) {
         seatPlayersInRandomOrder(demoPlayers)
@@ -21,7 +23,9 @@ export default function GameplayPage() {
     }
 
     function handleStopClick(evt) {
+        return
     }
+
 
     return (
         <div>
@@ -33,14 +37,14 @@ export default function GameplayPage() {
                 </div>
                     {currentPlaylist && currentPlaylist.length > 0 && (
                      <div>
-                         Loaded a playlist with {currentPlaylist.length} {currentPlaylist.length === 1 ? 'song' : 'songs'} 
+                         Loaded a playlist with {currentPlaylist.length} {currentPlaylist.length === 1 ? 'song' : 'songs'}
                      </div>
                      )}
-                    {unheardSongs && unheardSongs.length > 0 && (
+                    {unheardSongs && (
                      <div>
                          {unheardSongs.length} {unheardSongs.length === 1 ? 'Song' : 'Songs'} left to play
                      </div>
-                     )}
+                    )}
             </div>
             <div>
                 <h2>Current Players</h2>
