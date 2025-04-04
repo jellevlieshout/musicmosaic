@@ -5,7 +5,7 @@ import { demoPlayers } from "@/stores/demoPlayers";
 import { demoPlaylist } from "@/stores/demoPlaylist";
 
 export default function GameplayPage() {
-    const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist, stopPlayer,
+    const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist, stopPlayer, goToNextPlayer,
             currentPlayers, currentPlayerId, currentPlaylist, currentSongId, isAudioPlayerRunning } = useGameplayStore();
 
     const unheardSongs = currentPlaylist?.filter((song: Song) => !song.hasBeenPlayed)
@@ -15,6 +15,12 @@ export default function GameplayPage() {
         return song ? song.title : null; // Return the song title or null if not found
     }
     const currentSongTitle = getSongTitleById(currentSongId)
+
+    const getSongYearById = (songId: string) => {
+        const song = currentPlaylist?.find((song: Song) => song.id === songId);
+        return song ? song.year : null; // Return the song title or null if not found
+    }
+    const currentSongYear = getSongYearById(currentSongId)
 
     function handleAddDemoPlayersClick(evt) {
         seatPlayersInRandomOrder(demoPlayers)
@@ -30,6 +36,11 @@ export default function GameplayPage() {
 
     function handleStopClick(evt) {
         stopPlayer()
+    }
+
+    function handleWrongGuessClick(evt) {
+        stopPlayer()  // maybe a player wants to give up on guessing
+        goToNextPlayer()
     }
 
     return (
@@ -65,14 +76,26 @@ export default function GameplayPage() {
             <div>
                 <h2>Music Player</h2>
                 <div>
-                <button className="neon-tubes-styling" onClick={handlePlayClick} style={{margin: '20px'}} type="button">Play</button>
-                <button className="neon-tubes-styling" onClick={handleStopClick} style={{margin: '20px'}} type="button">Stop</button>
+                    <button className="neon-tubes-styling" onClick={handlePlayClick} style={{margin: '20px'}} type="button">Play</button>
+                    <button className="neon-tubes-styling" onClick={handleStopClick} style={{margin: '20px'}} type="button">Stop & Reveal</button>
                 </div>
-                    {isAudioPlayerRunning && currentSongId && currentSongTitle && (
-                        <div>
-                            We are playing the song with ID {currentSongId}, {currentSongTitle}
-                        </div>
-                    )}
+                {isAudioPlayerRunning && currentSongId && currentSongTitle && (
+                    <div>
+                        We are playing the song with ID {currentSongId}, {currentSongTitle}
+                    </div>
+                )}
+                {!isAudioPlayerRunning && (
+                    <div>
+                        Year of {currentSongTitle} was {currentSongYear}
+                    </div>
+                )}
+            </div>
+            <div>
+                <h2>Guessing</h2>
+                <div>
+                    <button className="neon-tubes-styling" style={{margin: '20px'}} type="button">Right guess</button>
+                    <button className="neon-tubes-styling" onClick={handleWrongGuessClick} style={{margin: '20px'}} type="button">Wrong guess</button>
+                </div>
             </div>
         </div>
     )

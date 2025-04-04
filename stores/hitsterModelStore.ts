@@ -30,6 +30,8 @@ export type GameplayState = {
     setPlaylist: (playlist: Song[]) => void
     seatPlayersInRandomOrder: (players: Player[]) => void
     playRandomNewSongFromCurrentPlaylist: () => void
+    stopPlayer: () => void
+    goToNextPlayer: () => void
     // revealSongDetails: () => void
     // playerWasRight: () => void
     // playerWasWrong: () => void
@@ -40,6 +42,7 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     currentPlayerId: null,
     currentPlaylist: null,
     currentSongId: null,
+    isAudioPlayerRunning: false,
 
     setPlaylist: (playlist: Song[]) => {
         function addHasBeenPlayedField(song: Song): Song {
@@ -59,7 +62,7 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
 
     playRandomNewSongFromCurrentPlaylist: () => {
         const { currentPlaylist } = get()
-        if (!currentPlaylist) 
+        if (!currentPlaylist)
             return
         const unheardSongs = currentPlaylist.filter((song: Song) => !song.hasBeenPlayed)
         if (unheardSongs.length === 0) {
@@ -78,7 +81,20 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
         console.log(`${player?.name}'s time to shine!`)
         player?.deck.forEach((song: Song) => console.log(song.year, song.title))
         console.log("Playing", randomSong.title)
+        set({ isAudioPlayerRunning: true })
 
-        set({ currentPlaylist: updatedPlaylist, currentSongId: Number(randomSong.id) })
+        set({ currentPlaylist: updatedPlaylist, currentSongId: randomSong.id })
+    },
+
+    stopPlayer: () => {
+        console.log("audio player stopped!")
+        set({ isAudioPlayerRunning: false })
+    },
+
+    goToNextPlayer: () => {
+        const { currentPlayerId, currentPlayers } = get()
+        const currentPlayerIndex = currentPlayers?.findIndex((p: Player) => p.id === currentPlayerId)
+        const newPlayerId = currentPlayers[(currentPlayerIndex + 1) % currentPlayers.length].id
+        set({ currentPlayerId : newPlayerId })
     }
 }))
