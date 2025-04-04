@@ -32,6 +32,7 @@ export type GameplayState = {
     playRandomNewSongFromCurrentPlaylist: () => void
     stopPlayer: () => void
     goToNextPlayer: () => void
+    addCardToPlayersDeck: () => void
     // revealSongDetails: () => void
     // playerWasRight: () => void
     // playerWasWrong: () => void
@@ -70,10 +71,14 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
             return
         }
 
+        console.log(unheardSongs)
+
         const randomSong = unheardSongs[Math.floor(Math.random() * unheardSongs.length)]
         const updatedPlaylist = currentPlaylist.map((song: Song) =>
             song.id === randomSong.id ? { ...song, hasBeenPlayed: true } : song
         )
+	console.log(randomSong)
+	console.log(updatedPlaylist)
 
         const { currentPlayers, currentPlayerId } = get()
         const player = currentPlayers?.find((p: Player) => p.id === currentPlayerId)
@@ -95,6 +100,25 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
         const { currentPlayerId, currentPlayers } = get()
         const currentPlayerIndex = currentPlayers?.findIndex((p: Player) => p.id === currentPlayerId)
         const newPlayerId = currentPlayers[(currentPlayerIndex + 1) % currentPlayers.length].id
-        set({ currentPlayerId : newPlayerId })
+        set({ currentPlayerId: newPlayerId })
+    },
+
+    addCardToPlayersDeck: () => {
+        const { currentPlayerId, currentPlayers, currentSongId, currentPlaylist } = get()
+        const currentPlayerIndex = currentPlayers?.findIndex((p: Player) => p.id === currentPlayerId)
+	const currentPlayerDeck = currentPlayers[currentPlayerIndex].deck
+	const currentSongIndex = currentPlaylist?.findIndex((s: Song) => s.id === currentSongId)
+
+        function sortDeckByYear(deck: Song[]): Song[] {
+            function compareYearsCB(songA: Song, songB: Song) {
+                return songA.year - songB.year;
+            }
+            return [...deck].sort(compareYearsCB);
+        }
+
+	const updatedPlayers = [...currentPlayers]
+
+        updatedPlayers[currentPlayerIndex].deck = sortDeckByYear([...currentPlayers[currentPlayerIndex].deck, currentPlaylist[currentSongIndex]])
+	set({currentPlayers: updatedPlayers})
     }
 }))

@@ -5,7 +5,7 @@ import { demoPlayers } from "@/stores/demoPlayers";
 import { demoPlaylist } from "@/stores/demoPlaylist";
 
 export default function GameplayPage() {
-    const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist, stopPlayer, goToNextPlayer,
+    const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist, stopPlayer, goToNextPlayer, addCardToPlayersDeck,
             currentPlayers, currentPlayerId, currentPlaylist, currentSongId, isAudioPlayerRunning } = useGameplayStore();
 
     const unheardSongs = currentPlaylist?.filter((song: Song) => !song.hasBeenPlayed)
@@ -36,6 +36,12 @@ export default function GameplayPage() {
 
     function handleStopClick(evt) {
         stopPlayer()
+    }
+
+    function handleRightGuessClick(evt) {
+        stopPlayer()  // a player is so sure they just place and click guess
+	addCardToPlayersDeck()
+        goToNextPlayer()
     }
 
     function handleWrongGuessClick(evt) {
@@ -69,6 +75,13 @@ export default function GameplayPage() {
                     {currentPlayers?.map((player: Player) => (
                         <li key={player.id} style={{ fontWeight: player.id === currentPlayerId ? 'bold' : 'normal' }}>
                             {player.name}
+                            {player.deck && player.deck.length > 0 && (
+                                <ul>
+                                    {player.deck.map((song: Song) => (
+                                        <li key={song.id}>{song.year}, {song.title}</li>
+                                    ))}
+                                </ul>
+			    )}
                         </li>
                     ))}
                 </ul>
@@ -93,7 +106,7 @@ export default function GameplayPage() {
             <div>
                 <h2>Guessing</h2>
                 <div>
-                    <button className="neon-tubes-styling" style={{margin: '20px'}} type="button">Right guess</button>
+                    <button className="neon-tubes-styling" onClick={handleRightGuessClick} style={{margin: '20px'}} type="button">Right guess</button>
                     <button className="neon-tubes-styling" onClick={handleWrongGuessClick} style={{margin: '20px'}} type="button">Wrong guess</button>
                 </div>
             </div>

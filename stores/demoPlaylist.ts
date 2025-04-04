@@ -1,7 +1,7 @@
 import { Song } from "@/stores/hitsterModelStore.ts"
 
 export const demoPlaylist: Song[] = [
-    	{ id: "91", title: "Bittersweet Symphony", artist: "The Verve", album: "Urban Hymns", year: 1997 },
+    	{ id: "39", title: "Black Hole Sun", artist: "Soundgarden", album: "Superunknown", year: 1994 },
     	{ id: "43", title: "One", artist: "U2", album: "Achtung Baby", year: 1991 },
     	{ id: "10", title: "Wonderwall", artist: "Oasis", album: "(What's the Story) Morning Glory?", year: 1995 },
     	{ id: "34", title: "Creep", artist: "Radiohead", album: "Pablo Honey", year: 1992 },
