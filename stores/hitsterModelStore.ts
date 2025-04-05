@@ -26,13 +26,14 @@ export type GameplayState = {
     currentPlayerId: string | null
     currentPlaylist: Song[] | null
     currentSongId: string | null
+    isAudioPlayerRunning: boolean
 
     setPlaylist: (playlist: Song[]) => void
     seatPlayersInRandomOrder: (players: Player[]) => void
     playRandomNewSongFromCurrentPlaylist: () => void
-    // revealSongDetails: () => void
-    // playerWasRight: () => void
-    // playerWasWrong: () => void
+    stopPlayer: () => void
+    goToNextPlayer: () => void
+    addCardToPlayersDeck: () => void
 }
 
 export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
@@ -40,6 +41,7 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     currentPlayerId: null,
     currentPlaylist: null,
     currentSongId: null,
+    isAudioPlayerRunning: false,
 
     setPlaylist: (playlist: Song[]) => {
         function addHasBeenPlayedField(song: Song): Song {
@@ -79,6 +81,45 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
         player?.deck.forEach((song: Song) => console.log(song.year, song.title))
         console.log("Playing", randomSong.title)
 
-        set({ currentPlaylist: updatedPlaylist, currentSongId: Number(randomSong.id) })
+        set({ 
+            currentPlaylist: updatedPlaylist, 
+            currentSongId: randomSong.id,
+            isAudioPlayerRunning: true
+        })
+    },
+
+    stopPlayer: () => {
+        set({ isAudioPlayerRunning: false })
+    },
+
+    goToNextPlayer: () => {
+        const { currentPlayers, currentPlayerId } = get()
+        if (!currentPlayers || !currentPlayerId) return
+
+        const currentIndex = currentPlayers.findIndex((p: Player) => p.id === currentPlayerId)
+        const nextIndex = (currentIndex + 1) % currentPlayers.length
+        const nextPlayerId = currentPlayers[nextIndex].id
+
+        set({ currentPlayerId: nextPlayerId })
+    },
+
+    addCardToPlayersDeck: () => {
+        const { currentPlayers, currentPlayerId, currentPlaylist, currentSongId } = get()
+        if (!currentPlayers || !currentPlayerId || !currentPlaylist || !currentSongId) return
+
+        const song = currentPlaylist.find((s: Song) => s.id === currentSongId)
+        if (!song) return
+
+        const updatedPlayers = currentPlayers.map((player: Player) => {
+            if (player.id === currentPlayerId) {
+                return {
+                    ...player,
+                    deck: [...player.deck, song]
+                }
+            }
+            return player
+        })
+
+        set({ currentPlayers: updatedPlayers })
     }
 }))
