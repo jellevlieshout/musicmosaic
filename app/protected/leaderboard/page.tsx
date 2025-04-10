@@ -1,11 +1,8 @@
+import LeaderboardView from "@/views/LeaderboardView";
 
-export default async function Settings() {
+export default async function LeaderboardPresenter() {
  
   return (
-    <>
-      <div>
-        Leaderboard
-      </div>
-    </>
+    <LeaderboardView />
   );
 }

@@ -1,11 +1,8 @@
+import NewGameView from "@/views/NewGameView";
 
-export default async function Settings() {
+export default async function NewGamePresenter() {
  
   return (
-    <>
-      <div>
-        New Game
-      </div>
-    </>
+    <NewGameView/>
   );
 }

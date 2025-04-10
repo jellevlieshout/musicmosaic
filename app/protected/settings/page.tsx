@@ -1,11 +1,8 @@
+import SettingsView from "@/views/SettingsView";
 
-export default async function Settings() {
+export default async function SettingsPresenter() {
  
   return (
-    <>
-      <div>
-        User settings
-      </div>
-    </>
+    <SettingsView />
   );
 }
