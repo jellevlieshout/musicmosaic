@@ -50,7 +50,8 @@ export default function RootLayout({
               <div className="flex flex-col gap-20 max-w-5xl p-5">
                 {children}
               </div>
-
+              {/* TODO: create our own footer */}
+{/* 
               <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
                 <p>
                   Powered by{" "}
@@ -64,7 +65,7 @@ export default function RootLayout({
                   </a>
                 </p>
                 <ThemeSwitcher />
-              </footer>
+              </footer> */}
             </div>
           </main>
         </ThemeProvider>

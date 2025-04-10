@@ -1,7 +1,8 @@
+"use client";
+
 import NewGameView from "@/views/NewGameView";
 
-export default async function NewGamePresenter() {
- 
+export default function NewGamePresenter() {
   return (
     <NewGameView/>
   );
