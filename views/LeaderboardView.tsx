@@ -1,4 +1,5 @@
 import '@/app/globals.css';
+import { getUserLocation } from '@/utils/locationApi';
 
 function renderNearYouRow(item: any, index: any) {
   return (
@@ -25,13 +26,16 @@ function renderAllTimeRow(item: any, index: any) {
 }
 
 export default async function Leaderboard() {
+  const loc = await getUserLocation();
+  // console.log("LOCATION_DATA:", loc);
+  const locationString = `${loc.city}, ${loc.country}`;
   const nearYouData = [
-    { username: "User123 (you)", location: "Stockholm, Sweden", wins: 7, stat1: "XX", stat2: "YY" },
-    { username: "MusicMan5",     location: "Stockholm, Sweden", wins: 6, stat1: "AA", stat2: "BB" },
+    { username: "User123 (you)", location: locationString, wins: 7, stat1: "XX", stat2: "YY" },
+    { username: "MusicMan5",     location: locationString, wins: 6, stat1: "AA", stat2: "BB" },
   ];
   const allTimeData = [
-    { username: "ILoveBeyonce",  location: "Lund, Sweden",    wins: 21, stat1: "XX", stat2: "YY" },
-    { username: "GoldenOldies",  location: "Uppsala, Sweden", wins: 19, stat1: "AA", stat2: "BB" },
+    { username: "ILoveBeyonce",  location: locationString,    wins: 21, stat1: "XX", stat2: "YY" },
+    { username: "GoldenOldies",  location: locationString, wins: 19, stat1: "AA", stat2: "BB" },
   ];
 
   return (
