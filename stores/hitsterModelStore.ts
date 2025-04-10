@@ -1,6 +1,7 @@
 // npm install zustand
 import { create } from 'zustand' // used to create stores (store = place where u store state & state modifying functions)
-
+import { subscribeWithSelector } from 'zustand/middleware'
+import { upsertPlayers } from '@/utils/supabase/supabaseModel'
 /**
  * Define types since we're working in typescript
  */
@@ -26,6 +27,7 @@ export type GameplayState = {
     currentPlayerId: string | null
     currentPlaylist: Song[] | null
     currentSongId: string | null
+    isAudioPlayerRunning?: boolean
 
     setPlaylist: (playlist: Song[]) => void
     seatPlayersInRandomOrder: (players: Player[]) => void
@@ -38,7 +40,8 @@ export type GameplayState = {
     // playerWasWrong: () => void
 }
 
-export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
+export const useGameplayStore = create<GameplayState>()(
+    subscribeWithSelector((set, get) => ({
     currentPlayers: null,
     currentPlayerId: null,
     currentPlaylist: null,
@@ -98,6 +101,7 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
 
     goToNextPlayer: () => {
         const { currentPlayerId, currentPlayers } = get()
+        if (!currentPlayers || currentPlayerId === null) return;
         const currentPlayerIndex = currentPlayers?.findIndex((p: Player) => p.id === currentPlayerId)
         const newPlayerId = currentPlayers[(currentPlayerIndex + 1) % currentPlayers.length].id
         set({ currentPlayerId: newPlayerId })
@@ -106,6 +110,10 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     addCardToPlayersDeck: () => {
         const { currentPlayerId, currentPlayers, currentSongId, currentPlaylist } = get()
         const currentPlayerIndex = currentPlayers?.findIndex((p: Player) => p.id === currentPlayerId)
+        if(!currentPlayers)
+            return
+        if(!currentPlayerIndex)
+            return
 	const currentPlayerDeck = currentPlayers[currentPlayerIndex].deck
 	const currentSongIndex = currentPlaylist?.findIndex((s: Song) => s.id === currentSongId)
 
@@ -118,7 +126,29 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
 
 	const updatedPlayers = [...currentPlayers]
 
-        updatedPlayers[currentPlayerIndex].deck = sortDeckByYear([...currentPlayers[currentPlayerIndex].deck, currentPlaylist[currentSongIndex]])
+        updatedPlayers[currentPlayerIndex].deck = currentPlaylist && currentSongIndex ? sortDeckByYear([...currentPlayers[currentPlayerIndex].deck, currentPlaylist[currentSongIndex]]) : updatedPlayers[currentPlayerIndex].deck
 	set({currentPlayers: updatedPlayers})
     }
-}))
+})))
+
+//------------------ subscription stuff -------------------------
+
+useGameplayStore.subscribe(listenForCurrentPlayersChange, firePlayersChangeSideEffectACB)
+
+// Listening for changes in currentPlayers
+function listenForCurrentPlayersChange(state: GameplayState) {
+    return state.currentPlayers
+}
+
+//Gets the new and the old value of the state fields we are listening to
+async function firePlayersChangeSideEffectACB(newPlayers: Player[] | null, prevPlayers: Player[] | null){
+    if(!newPlayers)
+        return
+    console.log("Processing new player amount with supabase...")
+    const { data, error } = await upsertPlayers(newPlayers)
+    if (error) {
+        console.error("Could not save players in supabase:", error)
+      } else {
+        console.log("Players saved in supabase:", data)
+      }
+}
