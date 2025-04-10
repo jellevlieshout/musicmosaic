@@ -1,10 +1,11 @@
 'use client'
 import '@/app/globals.css';
-import { Player, useGameplayStore } from "@/stores/hitsterModelStore";
+import { Player, Song, useGameplayStore } from "@/stores/hitsterModelStore";
 import { demoPlayers } from "@/stores/demoPlayers";
 import { demoPlaylist } from "@/stores/demoPlaylist";
+import GameplayView from '@/views/GameplayView';
 
-export default function GameplayPage() {
+export default function GameplayPresenter() {
     const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist, stopPlayer, goToNextPlayer, addCardToPlayersDeck,
             currentPlayers, currentPlayerId, currentPlaylist, currentSongId, isAudioPlayerRunning } = useGameplayStore();
 
@@ -22,32 +23,36 @@ export default function GameplayPage() {
     }
     const currentSongYear = getSongYearById(currentSongId)
 
-    function handleAddDemoPlayersClick(evt) {
+    function handleAddDemoPlayersClick(evt: any) {
         seatPlayersInRandomOrder(demoPlayers)
     }
 
-    function handleAddDemoPlaylistClick(evt) {
+    function handleAddDemoPlaylistClick(evt: any) {
         setPlaylist(demoPlaylist)
     }
 
-    function handlePlayClick(evt) {
+    function handlePlayClick(evt: any) {
         playRandomNewSongFromCurrentPlaylist()
     }
 
-    function handleStopClick(evt) {
+    function handleStopClick(evt: any) {
         stopPlayer()
     }
 
-    function handleRightGuessClick(evt) {
+    function handleRightGuessClick(evt: any) {
         stopPlayer()  // a player is so sure they just place and click guess
 	addCardToPlayersDeck()
         goToNextPlayer()
     }
 
-    function handleWrongGuessClick(evt) {
+    function handleWrongGuessClick(evt: any) {
         stopPlayer()  // maybe a player wants to give up on guessing
         goToNextPlayer()
     }
+
+    return (
+      <GameplayView />
+    )
 
     return (
         <div>
