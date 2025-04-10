@@ -1,6 +1,6 @@
 // await getUserLocation(); to get the location (ip)
 
-const LOCATION_API_URL = "https://api.ipgeolocation.io/getip";
+const LOCATION_API_URL = "https://api.ipgeolocation.io/ipgeo";
 const LOCATION_API_KEY = process.env.NEXT_PUBLIC_LOCATION_API_KEY;
 
 const passingFetchValue = 200;
@@ -8,7 +8,7 @@ const passingFetchValue = 200;
 export async function getUserLocation(){
     const fields = "ip,city,country_name,country_code2,state_prov,latitude,longitude,time_zone";
     const query = `apiKey=${LOCATION_API_KEY}&fields=${fields}`;
-    
+
     const URLToSend = `${LOCATION_API_URL}?${query}`;
 
     const response = await fetch(URLToSend, { method: 'GET' });
