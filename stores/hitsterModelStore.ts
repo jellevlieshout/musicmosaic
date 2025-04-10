@@ -26,6 +26,7 @@ export type GameplayState = {
     currentPlayerId: string | null
     currentPlaylist: Song[] | null
     currentSongId: string | null
+    isAudioPlayerRunning: boolean
 
     setPlaylist: (playlist: Song[]) => void
     seatPlayersInRandomOrder: (players: Player[]) => void
@@ -88,7 +89,11 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
         console.log("Playing", randomSong.title)
         set({ isAudioPlayerRunning: true })
 
-        set({ currentPlaylist: updatedPlaylist, currentSongId: randomSong.id })
+        set({ 
+            currentPlaylist: updatedPlaylist, 
+            currentSongId: randomSong.id,
+            isAudioPlayerRunning: true
+        })
     },
 
     stopPlayer: () => {

@@ -1,50 +1,64 @@
 'use client'
 import '@/app/globals.css';
-import { Player, useGameplayStore } from "@/stores/hitsterModelStore";
+import { Player, Song, useGameplayStore } from "@/stores/hitsterModelStore";
+import { useHitsterPersistence } from "@/hooks/useHitsterPersistence";
+import { useState } from "react";
 import { demoPlayers } from "@/stores/demoPlayers";
 import { demoPlaylist } from "@/stores/demoPlaylist";
 
 export default function GameplayPage() {
     const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist, stopPlayer, goToNextPlayer, addCardToPlayersDeck,
             currentPlayers, currentPlayerId, currentPlaylist, currentSongId, isAudioPlayerRunning } = useGameplayStore();
+    
+    // Generate a unique game ID for this session
+    const [gameId] = useState(() => {
+        // Use a timestamp as a simple way to generate a unique ID
+        return `game_${Date.now()}`;
+    });
+    
+    // Use the persistence hook to load and save game state
+    const { isLoading, error } = useHitsterPersistence(gameId);
 
     const unheardSongs = currentPlaylist?.filter((song: Song) => !song.hasBeenPlayed)
 
-    const getSongTitleById = (songId: string) => {
+
+    const getSongTitleById = (songId: string | null) => {
+        if (!songId) return null;
         const song = currentPlaylist?.find((song: Song) => song.id === songId);
         return song ? song.title : null; // Return the song title or null if not found
     }
     const currentSongTitle = getSongTitleById(currentSongId)
 
-    const getSongYearById = (songId: string) => {
+    const getSongYearById = (songId: string | null) => {
+        if (!songId) return null;
         const song = currentPlaylist?.find((song: Song) => song.id === songId);
         return song ? song.year : null; // Return the song title or null if not found
     }
     const currentSongYear = getSongYearById(currentSongId)
 
-    function handleAddDemoPlayersClick(evt) {
+    function handleAddDemoPlayersClick(evt: React.MouseEvent<HTMLButtonElement>) {
         seatPlayersInRandomOrder(demoPlayers)
     }
 
-    function handleAddDemoPlaylistClick(evt) {
+    function handleAddDemoPlaylistClick(evt: React.MouseEvent<HTMLButtonElement>) {
         setPlaylist(demoPlaylist)
     }
 
-    function handlePlayClick(evt) {
+    function handlePlayClick(evt: React.MouseEvent<HTMLButtonElement>) {
         playRandomNewSongFromCurrentPlaylist()
     }
 
-    function handleStopClick(evt) {
+    function handleStopClick(evt: React.MouseEvent<HTMLButtonElement>) {
         stopPlayer()
     }
 
-    function handleRightGuessClick(evt) {
+    function handleRightGuessClick(evt: React.MouseEvent<HTMLButtonElement>) {
         stopPlayer()  // a player is so sure they just place and click guess
-	addCardToPlayersDeck()
+	    addCardToPlayersDeck()
         goToNextPlayer()
     }
 
-    function handleWrongGuessClick(evt) {
+    function handleWrongGuessClick(evt: React.MouseEvent<HTMLButtonElement>) {
         stopPlayer()  // maybe a player wants to give up on guessing
         goToNextPlayer()
     }
@@ -52,6 +66,24 @@ export default function GameplayPage() {
     return (
         <div>
             <h1>Gameplay</h1>
+            {isLoading && <div>Loading game state...</div>}
+            {error && <div className="error">Error: {error}</div>}
+            <div>
+                <h2>Current Playlist</h2>
+                <div>
+                    <button className="neon-tubes-styling" onClick={handleAddDemoPlaylistClick} type="button">Add demo playlist</button>
+                </div>
+                    {currentPlaylist && currentPlaylist.length > 0 && (
+                     <div>
+                         Loaded a playlist with {currentPlaylist.length} {currentPlaylist.length === 1 ? 'song' : 'songs'}
+                     </div>
+                    )}
+                    {unheardSongs && (
+                     <div>
+                         {unheardSongs.length} {unheardSongs.length === 1 ? 'Song' : 'Songs'} left to play
+                     </div>
+                    )}
+            </div>
             <div>
                 <h2>Current Playlist</h2>
                 <div>
