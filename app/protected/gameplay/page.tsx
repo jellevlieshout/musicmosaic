@@ -21,6 +21,7 @@ export default function GameplayPage() {
 
     const unheardSongs = currentPlaylist?.filter((song: Song) => !song.hasBeenPlayed)
 
+
     const getSongTitleById = (songId: string | null) => {
         if (!songId) return null;
         const song = currentPlaylist?.find((song: Song) => song.id === songId);
@@ -53,7 +54,7 @@ export default function GameplayPage() {
 
     function handleRightGuessClick(evt: React.MouseEvent<HTMLButtonElement>) {
         stopPlayer()  // a player is so sure they just place and click guess
-	addCardToPlayersDeck()
+	    addCardToPlayersDeck()
         goToNextPlayer()
     }
 
@@ -77,6 +78,22 @@ export default function GameplayPage() {
                          Loaded a playlist with {currentPlaylist.length} {currentPlaylist.length === 1 ? 'song' : 'songs'}
                      </div>
                     )}
+                    {unheardSongs && (
+                     <div>
+                         {unheardSongs.length} {unheardSongs.length === 1 ? 'Song' : 'Songs'} left to play
+                     </div>
+                    )}
+            </div>
+            <div>
+                <h2>Current Playlist</h2>
+                <div>
+                    <button className="neon-tubes-styling" onClick={handleAddDemoPlaylistClick} type="button">Add demo playlist</button>
+                </div>
+                    {currentPlaylist && currentPlaylist.length > 0 && (
+                     <div>
+                         Loaded a playlist with {currentPlaylist.length} {currentPlaylist.length === 1 ? 'song' : 'songs'}
+                     </div>
+                     )}
                     {unheardSongs && (
                      <div>
                          {unheardSongs.length} {unheardSongs.length === 1 ? 'Song' : 'Songs'} left to play
@@ -114,10 +131,16 @@ export default function GameplayPage() {
                 )}
                 {!isAudioPlayerRunning && (
                     <div>
-                        <button className="neon-tubes-styling" onClick={handleRightGuessClick} style={{margin: '20px'}} type="button">Right Guess</button>
-                        <button className="neon-tubes-styling" onClick={handleWrongGuessClick} style={{margin: '20px'}} type="button">Wrong Guess</button>
+                        Year of {currentSongTitle} was {currentSongYear}
                     </div>
                 )}
+            </div>
+            <div>
+                <h2>Guessing</h2>
+                <div>
+                    <button className="neon-tubes-styling" onClick={handleRightGuessClick} style={{margin: '20px'}} type="button">Right guess</button>
+                    <button className="neon-tubes-styling" onClick={handleWrongGuessClick} style={{margin: '20px'}} type="button">Wrong guess</button>
+                </div>
             </div>
         </div>
     )
