@@ -17,14 +17,14 @@ export default async function Signup(props: {
   <p>Because GUIs are overrated.</p>
   <ol>
     <li>Open DevTools</li>
-    <li> >> myModel.setPlaylist(myDemoPlaylist) </li>
-    <li> >> myModel.seatPlayersInRandomOrder(myDemoPlayers) </li>
-    <li> >> myModel.playRandomNewSongFromCurrentPlaylist() </li>
-    <li> >> myModel.revealSongDetails() </li>
+    <li> {`>> myModel.setPlaylist(myDemoPlaylist)`} </li>
+    <li> {`>> myModel.seatPlayersInRandomOrder(myDemoPlayers)`} </li>
+    <li> {`>> myModel.playRandomNewSongFromCurrentPlaylist()`} </li>
+    <li> {`>> myModel.revealSongDetails()`} </li>
     <li> One of two options
       <ol>
-	<li> >> myModel.playerWasRight() </li>
-	<li> >> myModel.playerWasWrong() </li>
+	<li> {`>> myModel.playerWasRight()`} </li>
+	<li> {`>> myModel.playerWasWrong()`} </li>
       </ol>
     </li>
     <li> Go back to step 4 and keep having fun </li>
