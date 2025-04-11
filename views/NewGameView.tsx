@@ -81,7 +81,7 @@ export default function NewGameView({
             <SelectTrigger className="neon-glow-box-shadow">
               <SelectValue placeholder="Choose a playlist" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[300px] overflow-y-auto">
               {playlists.map((playlist) => (
                 <SelectItem key={playlist.id} value={playlist.id}>
                   {playlist.name}
