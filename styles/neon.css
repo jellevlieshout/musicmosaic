@@ -1,0 +1,10 @@
+/* Neon styling for the title */
+.neon-text {
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* Preserve the original neon-tubes-styling class */
+.neon-tubes-styling {
+  /* Keep any existing styles from the original class */
+} 
