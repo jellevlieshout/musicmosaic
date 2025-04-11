@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import NewGameView from "@/views/NewGameView";
 import { useGameplayStore, type Song } from '@/stores/hitsterModelStore';
+import { useHitsterPersistence } from '@/hooks/useHitsterPersistence';
 
 interface Playlist {
   id: string;
@@ -23,6 +24,9 @@ export default function NewGamePresenter() {
   // Get the setPlaylist function from the store
   const setPlaylist = useGameplayStore((state) => state.setPlaylist);
   const setGameSettings = useGameplayStore((state) => state.setGameSettings);
+
+  // Initialize a new game
+  const { isLoading, error, gameId } = useHitsterPersistence(null);
 
   // Run validation whenever any of the form fields change
   useEffect(() => {
@@ -76,7 +80,7 @@ export default function NewGamePresenter() {
   };
 
   const handleSubmit = () => {
-    if (!isFormValid) return;
+    if (!isFormValid || !gameId) return;
     
     // Find the selected playlist
     const selectedPlaylistData = playlists.find(p => p.id === selectedPlaylist);
@@ -91,9 +95,17 @@ export default function NewGamePresenter() {
     });
     setPlaylist(selectedPlaylistData.songs);
 
-    // Navigate to gameplay
-    router.push('/protected/gameplay');
+    // Navigate to player selection with the game ID
+    router.push(`/protected/new-game/players?gameId=${gameId}`);
   };
+
+  if (isLoading) {
+    return <div>Creating new game...</div>;
+  }
+
+  if (error) {
+    return <div>Error creating game: {error}</div>;
+  }
 
   return (
     <NewGameView

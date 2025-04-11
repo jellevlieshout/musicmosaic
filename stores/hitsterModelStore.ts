@@ -15,7 +15,7 @@ export type Song = {
 }
 
 export type Player = {
-    id: string
+    id?: string  // Make id optional since it will be assigned by the backend
     name: string
     highestScore: number | null
     deck: Song[]
@@ -36,11 +36,13 @@ export type GameplayState = {
 
     setPlaylist: (playlist: Song[]) => void
     seatPlayersInRandomOrder: (players: Player[]) => void
+    updatePlayersWithIds: (players: Player[]) => void
     playRandomNewSongFromCurrentPlaylist: () => void
     stopPlayer: () => void
     goToNextPlayer: () => void
     addCardToPlayersDeck: () => void
     setGameSettings: (settings: { location: string, allowSteals: boolean, songNameBonus: boolean, gameLength: string }) => void
+    resetModel: () => void
     // revealSongDetails: () => void
     // playerWasRight: () => void
     // playerWasWrong: () => void
@@ -53,6 +55,17 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     currentSongId: null,
     isAudioPlayerRunning: false,
     gameSettings: null,
+
+    resetModel: () => {
+        set({
+            currentPlayers: null,
+            currentPlayerId: null,
+            currentPlaylist: null,
+            currentSongId: null,
+            isAudioPlayerRunning: false,
+            gameSettings: null
+        })
+    },
 
     setGameSettings: (settings) => {
         set({ gameSettings: settings })
@@ -72,6 +85,24 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
             .sort((a, b) => a.sort - b.sort)
             .map(({ value }) => value)
         set({ currentPlayers: shuffled, currentPlayerId: shuffled[0]?.id ?? null })
+    },
+
+    updatePlayersWithIds: (players: Player[]) => {
+        // Update players while maintaining their current order
+        set((state: GameplayState) => {
+            if (!state.currentPlayers) return { currentPlayers: players };
+            
+            // Map new IDs to existing players while preserving order
+            const updatedPlayers = state.currentPlayers.map((player, index) => ({
+                ...player,
+                id: players[index].id
+            }));
+            
+            return { 
+                currentPlayers: updatedPlayers,
+                currentPlayerId: updatedPlayers[0]?.id ?? null
+            };
+        });
     },
 
     playRandomNewSongFromCurrentPlaylist: () => {

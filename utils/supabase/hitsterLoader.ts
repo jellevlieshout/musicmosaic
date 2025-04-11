@@ -3,28 +3,49 @@ import { Player, Song, useGameplayStore } from "@/stores/hitsterModelStore";
 
 /**
  * Load a game state from Supabase and update the Zustand store
- * @param gameId The unique identifier for the game
- * @returns A promise that resolves when the state is loaded
+ * @param gameId The unique identifier for the game, or null to create a new game
+ * @returns A promise that resolves with the game ID when the state is loaded
  */
-export async function loadGameState(gameId: string): Promise<boolean> {
+export async function loadGameState(gameId: string | null): Promise<string> {
   try {
     const supabase = createClient();
+    let data;
     
-    // Fetch the gameplay state from Supabase
-    const { data, error } = await supabase
-      .from('gameplay_states')
-      .select('*')
-      .eq('id', gameId)
-      .single();
-    
-    if (error) {
-      console.error('Error loading gameplay state:', error);
-      return false;
-    }
-    
-    if (!data) {
-      console.log('No gameplay state found for game ID:', gameId);
-      return false;
+    if (gameId) {
+      // Fetch existing game state
+      const { data: existingData, error } = await supabase
+        .from('gameplay_states')
+        .select('*')
+        .eq('id', gameId)
+        .single();
+      
+      if (error) throw error;
+      if (!existingData) throw new Error('Game not found');
+      
+      data = existingData;
+    } else {
+      // Create a new game
+      const { data: newData, error } = await supabase
+        .from('gameplay_states')
+        .insert({
+          game_settings: null,
+          current_playlist: null,
+          current_players: null,
+          current_player_id: null,
+          current_song_id: null
+        })
+        .select()
+        .single();
+
+      
+      if (error) throw error;
+      if (!newData) throw new Error('Failed to create new game');
+      
+      // Reset the model before creating a new game to ensure a clean state
+      const { resetModel } = useGameplayStore.getState();
+      resetModel();
+
+      data = newData;
     }
     
     // Update the Zustand store with the loaded state
@@ -51,9 +72,9 @@ export async function loadGameState(gameId: string): Promise<boolean> {
     }
     
     console.log('Game state loaded successfully');
-    return true;
+    return data.id;
   } catch (error) {
     console.error('Error in loadGameState:', error);
-    return false;
+    throw error;
   }
 } 
