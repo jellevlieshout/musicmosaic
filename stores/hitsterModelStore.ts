@@ -27,6 +27,12 @@ export type GameplayState = {
     currentPlaylist: Song[] | null
     currentSongId: string | null
     isAudioPlayerRunning: boolean
+    gameSettings: {
+        location: string
+        allowSteals: boolean
+        songNameBonus: boolean
+        gameLength: string
+    } | null
 
     setPlaylist: (playlist: Song[]) => void
     seatPlayersInRandomOrder: (players: Player[]) => void
@@ -34,6 +40,7 @@ export type GameplayState = {
     stopPlayer: () => void
     goToNextPlayer: () => void
     addCardToPlayersDeck: () => void
+    setGameSettings: (settings: { location: string, allowSteals: boolean, songNameBonus: boolean, gameLength: string }) => void
     // revealSongDetails: () => void
     // playerWasRight: () => void
     // playerWasWrong: () => void
@@ -45,6 +52,11 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     currentPlaylist: null,
     currentSongId: null,
     isAudioPlayerRunning: false,
+    gameSettings: null,
+
+    setGameSettings: (settings) => {
+        set({ gameSettings: settings })
+    },
 
     setPlaylist: (playlist: Song[]) => {
         function addHasBeenPlayedField(song: Song): Song {
