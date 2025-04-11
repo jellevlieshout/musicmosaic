@@ -22,6 +22,7 @@ export default function NewGamePresenter() {
 
   // Get the setPlaylist function from the store
   const setPlaylist = useGameplayStore((state) => state.setPlaylist);
+  const setGameSettings = useGameplayStore((state) => state.setGameSettings);
 
   // Run validation whenever any of the form fields change
   useEffect(() => {
@@ -82,6 +83,12 @@ export default function NewGamePresenter() {
     if (!selectedPlaylistData) return;
 
     // Save game settings to the store
+    setGameSettings({
+      location,
+      allowSteals,
+      songNameBonus,
+      gameLength
+    });
     setPlaylist(selectedPlaylistData.songs);
 
     // Navigate to gameplay

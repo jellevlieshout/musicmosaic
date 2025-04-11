@@ -8,6 +8,12 @@ type GameplayState = {
   currentPlayerId: string | null;
   currentPlaylist: Song[] | null;
   currentSongId: string | null;
+  gameSettings: {
+    location: string;
+    allowSteals: boolean;
+    songNameBonus: boolean;
+    gameLength: string;
+  } | null;
   updatedAt: string;
 };
 
@@ -44,6 +50,7 @@ export class HitsterObserver {
         currentPlayerId: state.currentPlayerId,
         currentPlaylist: state.currentPlaylist,
         currentSongId: state.currentSongId,
+        gameSettings: state.gameSettings,
         updatedAt: new Date().toISOString(),
       };
 
@@ -55,6 +62,7 @@ export class HitsterObserver {
           current_player_id: gameplayState.currentPlayerId,
           current_playlist: gameplayState.currentPlaylist,
           current_song_id: gameplayState.currentSongId,
+          game_settings: gameplayState.gameSettings,
           updated_at: gameplayState.updatedAt
         }, { onConflict: 'id' });
 
