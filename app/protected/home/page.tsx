@@ -21,7 +21,26 @@ export default function HomePresenter() {
         window.location.hash = "";
       }
     }
-  }, [setAccessToken]);
+
+    // Test if the current token is valid
+    if (accessToken) {
+      fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          // Token is invalid, clear it
+          setAccessToken(null);
+        }
+      })
+      .catch(() => {
+        // Error occurred, clear the token
+        setAccessToken(null);
+      });
+    }
+  }, [setAccessToken, accessToken]);
 
   const handleSpotifyConnect = () => {
     window.location.href = getSpotifyAuthUrl();
