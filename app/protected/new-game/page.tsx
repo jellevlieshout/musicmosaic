@@ -43,7 +43,7 @@ export default function NewGamePresenter() {
 
   const fetchUserPlaylists = async () => {
     try {
-      const response = await fetch('https://api.spotify.com/v1/me/playlists', {
+      const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=50', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -54,6 +54,8 @@ export default function NewGamePresenter() {
       }
 
       const data = await response.json();
+
+    
       const formattedPlaylists = data.items.map((playlist: any) => ({
         id: playlist.id,
         name: playlist.name,
