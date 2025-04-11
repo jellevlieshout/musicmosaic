@@ -36,7 +36,48 @@ export class HitsterObserver {
   private setupObserver() {
     return useGameplayStore.subscribe((state: StoreGameplayState) => {
       this.persistState(state);
+      // Only persist players if they exist and don't have IDs yet
+      if (state.currentPlayers && state.currentPlayers.some(player => !player.id)) {
+        this.persistPlayers(state.currentPlayers);
+      }
     });
+  }
+
+  /**
+   * Persist players to the players table
+   */
+  private async persistPlayers(players: Player[]) {
+    try {
+      // Insert players and get back the assigned IDs
+      const { data, error } = await this.supabase
+        .from('player')
+        .insert(
+          players.map(player => ({
+            name: player.name,
+            highest_score: player.highestScore,
+            game_id: this.gameId
+          }))
+        )
+        .select();
+
+      if (error) {
+        console.error('Error persisting players:', error);
+        return;
+      }
+
+      if (data) {
+        // Update the store with the assigned IDs
+        const playersWithIds = players.map((player, index) => ({
+          ...player,
+          id: data[index].id
+        }));
+        
+        useGameplayStore.getState().updatePlayersWithIds(playersWithIds);
+        console.log('Players persisted and updated with IDs successfully');
+      }
+    } catch (error) {
+      console.error('Error in persistPlayers:', error);
+    }
   }
 
   /**

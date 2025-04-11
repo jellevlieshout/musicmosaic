@@ -95,8 +95,8 @@ export default function NewGamePresenter() {
     });
     setPlaylist(selectedPlaylistData.songs);
 
-    // Navigate to gameplay with the game ID in the URL
-    router.push(`/protected/gameplay/${gameId}`);
+    // Navigate to player selection with the game ID
+    router.push(`/protected/new-game/players?gameId=${gameId}`);
   };
 
   if (isLoading) {
