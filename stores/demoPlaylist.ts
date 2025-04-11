@@ -1,4 +1,4 @@
-import { Song } from "@/stores/hitsterModelStore.ts"
+import { Song } from "@/utils/types";
 
 export const demoPlaylist: Song[] = [
     	{ id: "39", title: "Black Hole Sun", artist: "Soundgarden", album: "Superunknown", year: 1994 },

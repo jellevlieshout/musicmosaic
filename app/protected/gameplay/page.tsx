@@ -1,15 +1,23 @@
 'use client'
 import '@/app/globals.css';
-import { Player, Song, useGameplayStore } from "@/stores/hitsterModelStore";
+import { useGameplayStore } from "@/stores/hitsterModelStore";
 import { demoPlayers } from "@/stores/demoPlayers";
 import { demoPlaylist } from "@/stores/demoPlaylist";
 import GameplayView from '@/views/GameplayView';
+import { Song } from '@/utils/types';
+import { useEffect } from 'react';
 
 export default function GameplayPresenter() {
     const { seatPlayersInRandomOrder, setPlaylist, playRandomNewSongFromCurrentPlaylist, stopPlayer, goToNextPlayer, addCardToPlayersDeck,
             currentPlayers, currentPlayerId, currentPlaylist, currentSongId, isAudioPlayerRunning } = useGameplayStore();
 
     const unheardSongs = currentPlaylist?.filter((song: Song) => !song.hasBeenPlayed)
+
+    useEffect(() => {
+        seatPlayersInRandomOrder(demoPlayers)
+        setPlaylist(demoPlaylist)
+      }, []);
+
 
     const getSongTitleById = (songId: string) => {
         const song = currentPlaylist?.find((song: Song) => song.id === songId);
@@ -23,13 +31,13 @@ export default function GameplayPresenter() {
     }
     const currentSongYear = getSongYearById(currentSongId)
 
-    function handleAddDemoPlayersClick(evt: any) {
-        seatPlayersInRandomOrder(demoPlayers)
-    }
+    // function handleAddDemoPlayersClick(evt: any) {
+    //     seatPlayersInRandomOrder(demoPlayers)
+    // }
 
-    function handleAddDemoPlaylistClick(evt: any) {
-        setPlaylist(demoPlaylist)
-    }
+    // function handleAddDemoPlaylistClick(evt: any) {
+    //     setPlaylist(demoPlaylist)
+    // }
 
     function handlePlayClick(evt: any) {
         playRandomNewSongFromCurrentPlaylist()
@@ -51,7 +59,7 @@ export default function GameplayPresenter() {
     }
 
     return (
-      <GameplayView />
+      <GameplayView currentPlayers={currentPlayers} currentPlayerId={currentPlayerId}/>
     )
 
     return (
