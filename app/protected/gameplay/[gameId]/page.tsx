@@ -6,6 +6,8 @@ import { useState } from "react";
 import { demoPlayers } from "@/stores/demoPlayers";
 import { demoPlaylist } from "@/stores/demoPlaylist";
 import * as React from 'react';
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface GameplayPageProps {
   params: Promise<{
@@ -20,6 +22,7 @@ export default function GameplayPage({ params }: GameplayPageProps) {
     
     // Use the persistence hook to load and save game state
     const { isLoading, error } = useHitsterPersistence(unwrappedParams.gameId);
+    const [isDemoMode, setIsDemoMode] = useState(false);
 
     const unheardSongs = currentPlaylist?.filter((song: Song) => !song.hasBeenPlayed)
 
@@ -75,8 +78,19 @@ export default function GameplayPage({ params }: GameplayPageProps) {
             <h1>Gameplay</h1>
             <div>
                 <h2>Game ID: {unwrappedParams.gameId}</h2>
-                <button className="neon-tubes-styling" onClick={handleAddDemoPlayersClick} style={{margin: '20px'}} type="button">Add demo players</button>
-                <button className="neon-tubes-styling" onClick={handleAddDemoPlaylistClick} style={{margin: '20px'}} type="button">Add demo playlist</button>
+                <div className="flex items-center justify-between max-w-xs mx-auto mb-4">
+                    <Label className="neon-tubes-styling">Demo Mode</Label>
+                    <Switch
+                        checked={isDemoMode}
+                        onCheckedChange={setIsDemoMode}
+                    />
+                </div>
+                {isDemoMode && (
+                    <>
+                        <button className="neon-tubes-styling" onClick={handleAddDemoPlayersClick} style={{margin: '20px'}} type="button">Add demo players</button>
+                        <button className="neon-tubes-styling" onClick={handleAddDemoPlaylistClick} style={{margin: '20px'}} type="button">Add demo playlist</button>
+                    </>
+                )}
             </div>
             <div>
                 <h2>Music Player</h2>
