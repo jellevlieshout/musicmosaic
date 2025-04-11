@@ -41,6 +41,7 @@ export type GameplayState = {
     goToNextPlayer: () => void
     addCardToPlayersDeck: () => void
     setGameSettings: (settings: { location: string, allowSteals: boolean, songNameBonus: boolean, gameLength: string }) => void
+    resetModel: () => void
     // revealSongDetails: () => void
     // playerWasRight: () => void
     // playerWasWrong: () => void
@@ -53,6 +54,17 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     currentSongId: null,
     isAudioPlayerRunning: false,
     gameSettings: null,
+
+    resetModel: () => {
+        set({
+            currentPlayers: null,
+            currentPlayerId: null,
+            currentPlaylist: null,
+            currentSongId: null,
+            isAudioPlayerRunning: false,
+            gameSettings: null
+        })
+    },
 
     setGameSettings: (settings) => {
         set({ gameSettings: settings })

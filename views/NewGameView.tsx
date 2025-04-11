@@ -136,7 +136,7 @@ export default function NewGameView({
         </div>
 
         <Button
-          className={`w-full mt-6 ${isFormValid ? 'neon-tubes-styling' : 'opacity-50'}`}
+          className={`w-full mt-6 ${isFormValid ? ' text-black' : 'opacity-50'}`}
           onClick={onSubmit}
           disabled={!isFormValid}
         >
