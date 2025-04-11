@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PlayerSelectionView from "@/views/PlayerSelectionView";
 import { useGameplayStore, type Player } from '@/stores/hitsterModelStore';
 
-export default function PlayerSelectionPresenter() {
+function PlayerSelectionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const gameId = searchParams.get('gameId');
@@ -45,5 +45,13 @@ export default function PlayerSelectionPresenter() {
       onValidate={validatePlayers}
       isFormValid={isFormValid}
     />
+  );
+}
+
+export default function PlayerSelectionPresenter() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PlayerSelectionContent />
+    </Suspense>
   );
 } 
