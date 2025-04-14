@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
-import { Player, Song, useGameplayStore } from "@/stores/hitsterModelStore";
+import { useGameplayStore } from "@/stores/hitsterModelStore";
 
 /**
  * Load a game state from Supabase and update the Zustand store

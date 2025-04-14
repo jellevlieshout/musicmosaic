@@ -1,4 +1,4 @@
-import { Player } from "@/stores/hitsterModelStore"
+import { Player } from "@/utils/types";
 
 export const demoPlayers: Player[] = [
 	{id: "4560", name: "Luca", highestScore: null, deck: []},

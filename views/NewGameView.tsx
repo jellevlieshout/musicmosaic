@@ -12,13 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { type Song } from '@/stores/hitsterModelStore';
-
-interface Playlist {
-  id: string;
-  name: string;
-  songs: Song[];
-}
+import { Song, Playlist } from '@/utils/types';
 
 interface NewGameViewProps {
   playlists: Playlist[];
@@ -126,11 +120,23 @@ export default function NewGameView({
               <SelectValue placeholder="Songs per player" />
             </SelectTrigger>
             <SelectContent>
-              {gameLengthOptions.map((num) => (
+              {/* {gameLengthOptions.map((num) => (
                 <SelectItem key={num} value={num.toString()}>
                   {num} songs per player
                 </SelectItem>
-              ))}
+              ))} */}
+                <SelectItem key={3} value={'3'}>
+                  Quick game - 3 cards to win
+                </SelectItem>
+                <SelectItem key={5} value={'5'}>
+                  Short game - 5 cards to win
+                </SelectItem>
+                <SelectItem key={10} value={'10'}>
+                  Standard game - 10 cards to win
+                </SelectItem>
+                <SelectItem key={15} value={'15'}>
+                  Long game - 15 cards to win
+                </SelectItem>
             </SelectContent>
           </Select>
         </div>

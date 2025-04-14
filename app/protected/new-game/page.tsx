@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import NewGameView from "@/views/NewGameView";
-import { useGameplayStore, type Song } from '@/stores/hitsterModelStore';
+import { useGameplayStore } from '@/stores/hitsterModelStore';
 import { useHitsterPersistence } from '@/hooks/useHitsterPersistence';
 import { useSpotifyStore } from '@/stores/spotifyStore';
+import { Song } from '@/utils/types';
 
 interface Playlist {
   id: string;
