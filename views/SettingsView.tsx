@@ -1,6 +1,10 @@
 import '@/app/globals.css';
 
-export default async function SettingsView() {
+type SettingsViewProps = {
+  location: string;
+};
+
+export default async function SettingsView({location}: SettingsViewProps) {
 
   return (
     <>
@@ -58,6 +62,7 @@ export default async function SettingsView() {
             <input
               type="text"
               id="spotify-account"
+              value = {location}
               placeholder="the location API takes care of this"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none neon-glow-box-shadow"
               disabled
