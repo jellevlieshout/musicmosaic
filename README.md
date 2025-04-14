@@ -73,9 +73,8 @@ Your project file structure (short description/purpose of each file)
 |   ... 
 ├── hooks                   # this contains the logic which sets up connectivity to the game model, and initiates necessary observers to handle persistence.
 │   └── useHisterPersistence.ts  
-├── lib       
-├── model_in_devtools       # ADD DETAILS (maybe we can delete this?)
-├── stores                  # ADD DETAILS
+├── lib
+├── stores                  # in here are shared state containers, called "stores" in Zustand lingo
 │   ├── histerModelStore.ts
 │   └── spotifyStore.ts  
 ├── styles
