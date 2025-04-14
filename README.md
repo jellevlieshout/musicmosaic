@@ -40,7 +40,7 @@ Our app would basically be a digital version of this game, but with some potenti
 * Spotify API integration
   * When playing the game, a user must authenticate themselves using OAuth, after which they can access their personal playlists and songs through the Spotify Web API, and stream the songs using the Spotify Web Playback SDK, where the browser session acts as a device. Currently, we are working within a free developer environment of the Spotify API, meaning we have to whitelist users to authenticate. Please reach out to us at jellevl@kth.se such that we can whitelist you! 
 * Geolocation API integration
-  * ADD DETAILS HERE
+  * Usage of a location API that displays your current city and country. This is displayed in the game settings page, and also the leaderboard page in order to show highscores based on your location. 
 * Zustand store for game logic
   * Zustand is a lightweight state management library for React applications.
     It provides a simple API for managing global state without the boilerplate often associated with other state management solutions like Redux.
