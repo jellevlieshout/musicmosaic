@@ -68,7 +68,7 @@ Our app would basically be a digital version of this game, but with some potenti
 Your project file structure (short description/purpose of each file)
 ```
 .
-├── app                     # ADD DETAILS
+├── app                     
 │   ├── (auth-pages)
 │   ├── auth                # pages related to authentication: logging in, signing up, reset password etc. 
 │   ├── protected           # pages only accessible to authenticated users. 
