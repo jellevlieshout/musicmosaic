@@ -14,3 +14,16 @@ export type Player = {
     highestScore: number | null
     deck: Song[]
 }
+
+export type Playlist = {
+    id: string
+    name: string
+    songs: Song[]
+}
+
+export type GameSettings = {
+    location: string
+    allowSteals: boolean
+    songNameBonus: boolean
+    gameLength: string
+}

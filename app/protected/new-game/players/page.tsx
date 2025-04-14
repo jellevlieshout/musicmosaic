@@ -3,7 +3,9 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PlayerSelectionView from "@/views/PlayerSelectionView";
-import { useGameplayStore, type Player } from '@/stores/hitsterModelStore';
+import { useGameplayStore} from '@/stores/hitsterModelStore';
+import { Player } from '@/utils/types';
+import { v4 as uuidv4 } from 'uuid';
 
 function PlayerSelectionContent() {
   const router = useRouter();
@@ -11,8 +13,8 @@ function PlayerSelectionContent() {
   const gameId = searchParams.get('gameId');
   const [isFormValid, setIsFormValid] = useState(false);
 
-  // Get the seatPlayersInRandomOrder function from the store
-  const seatPlayersInRandomOrder = useGameplayStore((state) => state.seatPlayersInRandomOrder);
+  // Get game state functions from the store
+  const { seatPlayersInRandomOrder, pickRandomNewSong, addCardToPlayersDeck, goToNextPlayer } = useGameplayStore();
 
   const validatePlayers = useCallback((players: string[]) => {
     // At least one player with a non-empty name
@@ -27,6 +29,7 @@ function PlayerSelectionContent() {
     const players: Player[] = playerNames
       .filter(name => name.trim() !== "")
       .map(name => ({
+        id: uuidv4(),
         name: name.trim(),
         highestScore: null,
         deck: []
@@ -34,6 +37,13 @@ function PlayerSelectionContent() {
 
     // Save players to the store - IDs will be assigned by the backend
     seatPlayersInRandomOrder(players);
+
+    // initialize players decks with one card
+    players.forEach(() => {
+        pickRandomNewSong()
+        addCardToPlayersDeck()
+        goToNextPlayer()
+    })
 
     // Navigate to gameplay
     router.push(`/protected/gameplay/${gameId}`);
