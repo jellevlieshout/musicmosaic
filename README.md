@@ -55,7 +55,7 @@ Our app would basically be a digital version of this game, but with some potenti
 
 ## Next steps
 * Solve issue of Spotify account whitelist
-  * ADD DETAILS HERE
+  * See `What has been done so far/Spotify integration` above
 * UI/Interaction improvements
   * Enhance card/timeline component to be draggable/more like real cards in a game
   * Add visual animation for when music is playing
