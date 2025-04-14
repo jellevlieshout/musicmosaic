@@ -1,5 +1,10 @@
 # MyMiniMusicMosaicModel
 
+TL;DR;
+This is a playable version of the game requiring nothing but a webserver on localhost, it does nothing else.
+It has been written just to test the game logic.
+That is **this folder along with its content will be deleted, and has nothing to do with the webapp that is being deployed**.
+
 Quoting from the course material...
 
 > The Model keeps the state of the application (Application State). 
