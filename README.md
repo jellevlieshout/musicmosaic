@@ -15,8 +15,13 @@ Please reach out to Jelle van Lieshout through jellevl@kth.se or by sending me a
 “Music Mosaic” aims at being a digital version of the board game Hitster, here briefly described.
 There is a stack of cards at the center of the table, each card has a qr code on the front pointing to the Spotify URL of a song, and on the back the name, artist and release year of that same song.
 Players sit in a circle, each player takes a card and places it in front of themselves with the song info (i.e. name, artist, year) facing up and visible.
-The first player will take a card from the stack, and without flipping it (that is, song name/band/year is not visible) they'll scan the QR code with the jukebox phone and start playing it.
-Their task is to guess when the song was released: earlier, or later than the song on the card they already have in front of them? They take their guess and place it either left or right of the card they already have in front of them, depending on whether they think it was released earlier or later. They then flip the card: were they right in their guess, they keep the card---were they wrong, they lose the card! It is now the next player's turn.The game ends when the first player manages to collect 10 cards.
+The first player will take a card from the stack, and without flipping it (that is, song name/band/year is not visible) they'll scan the QR code with the "jukebox phone" (that is, a phone with access to Spotify used throughout the whole game) and start playing the song.
+Their task is to guess when the song was released: earlier, or later than the song on the card they may already have in front of them?
+Were they right in their guess, they keep the card---were they wrong, they lose the card!
+It is now the next player's turn, who will do the same thing.
+The game keeps going, and the difficulty increases as the timeline of each player builds up.
+The game ends when the first player manages to collect 10 cards.
+
 Our app would basically be a digital version of this game, but with some potential additional features like:
 * Location based score comparison;
 * Ability to upload/create your own song list for the game to use;
@@ -33,11 +38,13 @@ Our app would basically be a digital version of this game, but with some potenti
     
 ## What has been done so far
 * Spotify API integration
-  * When playing the game, a user must authenticate themselve using OAuth, after which they can access their personal playlists and songs through the Spotify Web API, and stream the songs using the Spotify Web Playback SDK, where the browser session acts as a device. Currently, we are working within a free developer environment of the Spotify API, meaning we have to whitelist users to authenticate. Please reach out to us at jellevl@kth.se such that we can whitelist you! 
+  * When playing the game, a user must authenticate themselves using OAuth, after which they can access their personal playlists and songs through the Spotify Web API, and stream the songs using the Spotify Web Playback SDK, where the browser session acts as a device. Currently, we are working within a free developer environment of the Spotify API, meaning we have to whitelist users to authenticate. Please reach out to us at jellevl@kth.se such that we can whitelist you! 
 * Geolocation API integration
   * ADD DETAILS HERE
 * Zustand store for game logic
-  * ADD DETAILS HERE
+  * Zustand is a lightweight state management library for React applications.
+    It provides a simple API for managing global state without the boilerplate often associated with other state management solutions like Redux.
+    In particular, `stores/hitsterModelStore.ts` contains state variables such as the current players, playlist, and song, along with functions to manipulate this state, like setting the playlist, picking random songs, and controlling the audio player.
 * Persistence of game state in Supabase
   * We have defined a hitsterModelObserver, which is subscribed to our Zustand game model using publish/subscribe functionality offered by Zustand. Whenever a change is detected in (part of) the model, the observer notices this change, and can choose to persist information to our Supabase backend/database. Supabase is built using a PostgreSQL database. 
 * User authentication and authorization with Supabase
