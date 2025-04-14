@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/client";
-import { Player, Song, useGameplayStore, GameplayState as StoreGameplayState } from "@/stores/hitsterModelStore";
+import { useGameplayStore, GameplayState as StoreGameplayState } from "@/stores/hitsterModelStore";
+import { GameSettings, Player, Song } from "../types";
 
 // Define the database schema types
 type GameplayState = {
@@ -8,12 +9,7 @@ type GameplayState = {
   currentPlayerId: string | null;
   currentPlaylist: Song[] | null;
   currentSongId: string | null;
-  gameSettings: {
-    location: string;
-    allowSteals: boolean;
-    songNameBonus: boolean;
-    gameLength: string;
-  } | null;
+  gameSettings: GameSettings | null;
   updatedAt: string;
 };
 
