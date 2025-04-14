@@ -85,7 +85,7 @@ Your project file structure (short description/purpose of each file)
 │   ├── histerModelStore.ts
 │   └── spotifyStore.ts  
 ├── styles
-├── utils                   # ADD DETAILS    
+├── utils                   # configs and utility functions, mainly (but not only) for external APIs
 └── views                   # application views
 │   ├── GameplayView.tsx
 │   ├── HomeView.tsx
