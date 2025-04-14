@@ -45,7 +45,7 @@ export const updateSession = async (request: NextRequest) => {
     }
 
     // root path redirection
-    if (request.nextUrl.pathname === "/") {
+    if (request.nextUrl.pathname === "/" || request.nextUrl.pathname === "/protected") {
       if (user.error) {
         return NextResponse.redirect(new URL("/sign-in", request.url));
       } else {
