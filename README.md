@@ -25,10 +25,10 @@ Our app would basically be a digital version of this game, but with some potenti
 ### Frameworks
 * React
 * Typescript
-* NextJS backend \- [https://nextjs.org/](https://nextjs.org/)
+* NextJS \- [https://nextjs.org/](https://nextjs.org/)
 * Supabase \- [https://supabase.com/](https://supabase.com/)
 * Vercel \- [https://vercel.com/](https://vercel.com/)
-* Component library \- [https://ui.shadcn.com/](https://ui.shadcn.com/)
+* Shadcn Component library \- [https://ui.shadcn.com/](https://ui.shadcn.com/)
 * Zustand \- [https://zustand-demo.pmnd.rs/](https://zustand-demo.pmnd.rs/)
     
 ## What has been done so far
