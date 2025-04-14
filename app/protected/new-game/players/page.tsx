@@ -60,7 +60,7 @@ function PlayerSelectionContent() {
 
 export default function PlayerSelectionPresenter() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading....</div>}>
       <PlayerSelectionContent />
     </Suspense>
   );
