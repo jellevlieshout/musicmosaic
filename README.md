@@ -65,7 +65,6 @@ Our app would basically be a digital version of this game, but with some potenti
 * Player leaderboard 
 
 ## File structure
-Your project file structure (short description/purpose of each file)
 ```
 .
 ├── app                     
