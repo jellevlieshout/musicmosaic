@@ -13,6 +13,8 @@ export type Player = {
     name: string
     highestScore: number | null
     deck: Song[]
+    location?: string;    
+    wins?: number;
 }
 
 export type Playlist = {
