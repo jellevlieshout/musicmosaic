@@ -6,7 +6,6 @@ import PlayerSelectionView from "@/views/PlayerSelectionView";
 import { useGameplayStore} from '@/stores/hitsterModelStore';
 import { Player } from '@/utils/types';
 import { v4 as uuidv4 } from 'uuid';
-import { getUserLocation } from '@/utils/locationApi'; //######new
 
 
 function PlayerSelectionContent() {
@@ -24,11 +23,8 @@ function PlayerSelectionContent() {
     setIsFormValid(validPlayers.length > 0);
   }, []);
 
-  const handleSubmit = async (playerNames: string[]) => {
+  const handleSubmit = (playerNames: string[]) => {
     if (!gameId || !isFormValid) return;
-
-    const loc = await getUserLocation();
-    const locationString = `${loc.city}, ${loc.country}`;
 
     // Create Player objects from names
     const players: Player[] = playerNames
