@@ -51,7 +51,9 @@ export class HitsterObserver {
           players.map(player => ({
             name: player.name,
             highest_score: player.highestScore,
-            game_id: this.gameId
+            game_id: this.gameId,
+            location: player.location,
+            wins: player.wins,
           }))
         )
         .select();

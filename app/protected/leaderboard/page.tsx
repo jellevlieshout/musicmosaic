@@ -1,10 +1,14 @@
+import { getLeaderboardData } from "./leaderboardData";
 import LeaderboardView from "@/views/LeaderboardView";
-import { getUserLocation } from '@/utils/locationApi';
 
 export default async function LeaderboardPresenter() {
-  const loc = await getUserLocation();
+  const { userLocation, nearYouList, allTimeList } = await getLeaderboardData();
 
   return (
-    <LeaderboardView location={`${loc.city}, ${loc.country}`} />
+    <LeaderboardView
+      userLocation={userLocation}
+      nearYouList={nearYouList}
+      allTimeList={allTimeList}
+    />
   );
 }

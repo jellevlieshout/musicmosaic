@@ -1,63 +1,55 @@
-import '@/app/globals.css';
-import { getUserLocation } from '@/utils/locationApi';
+"use client";
 
-type LeaderboardProps = {
-  location: string
+interface LeaderboardViewProps {
+  userLocation: string;
+  nearYouList: Array<{
+    name: string;
+    location: string | null;
+    wins: number | null;
+    highest_score: number | null;
+  }>;
+  allTimeList: Array<{
+    name: string;
+    location: string | null;
+    wins: number | null;
+    highest_score: number | null;
+  }>;
 }
 
-function renderNearYouRow(item: any, index: any) {
-  return (
+export default function LeaderboardView({
+  userLocation,
+  nearYouList,
+  allTimeList,
+}: LeaderboardViewProps) {
+
+  const renderRow = (item: any, index: number) => (
     <tr key={index}>
-      <td>{item.username}</td>
-      <td>{item.location}</td>
-      <td>{item.wins}</td>
-      <td>{item.stat1}</td>
-      <td>{item.stat2}</td>
+      <td>{item.name}</td>
+      <td>{item.location ?? "Unknown"}</td>
+      <td>{item.wins ?? 0}</td>
+      <td>{item.highest_score ?? 0}</td>
     </tr>
   );
-}
-
-function renderAllTimeRow(item: any, index: any) {
-  return (
-    <tr key={index}>
-      <td>{item.username}</td>
-      <td>{item.location}</td>
-      <td>{item.wins}</td>
-      <td>{item.stat1}</td>
-      <td>{item.stat2}</td>
-    </tr>
-  );
-}
-
-export default async function Leaderboard({location}: LeaderboardProps) {
-  const nearYouData = [
-    { username: "User123 (you)", location: location, wins: 7, stat1: "XX", stat2: "YY" },
-    { username: "MusicMan5",     location: location, wins: 6, stat1: "AA", stat2: "BB" },
-  ];
-  const allTimeData = [
-    { username: "ILoveBeyonce",  location: location,    wins: 21, stat1: "XX", stat2: "YY" },
-    { username: "GoldenOldies",  location: location, wins: 19, stat1: "AA", stat2: "BB" },
-  ];
 
   return (
     <div className="parentContainerLeaderboard">
       <h1 className="neon-tubes-styling text-5xl text-center">Leaderboard</h1>
-      <h2 className="neon-tubes-styling text-3xl mt-5 text-center">Near you</h2>
+      <h2 className="neon-tubes-styling text-3xl mt-5 text-center">
+        Near you ({userLocation})
+      </h2>
       <table className="table-auto w-full border-separate border-spacing-4 text-left mt-2">
         <thead>
           <tr>
             <th>Username</th>
             <th>Location</th>
             <th>Wins</th>
-            <th>Stat #1</th>
-            <th>Stat #2</th>
+            <th>Highest score</th>
           </tr>
         </thead>
         <tbody>
-          {nearYouData.map(renderNearYouRow)}
+          {nearYouList.map(renderRow)}
         </tbody>
       </table>
-
       <h2 className="neon-tubes-styling text-3xl mt-5 text-center">All time</h2>
       <table className="table-auto w-full border-separate border-spacing-4 text-left mt-2">
         <thead>
@@ -65,12 +57,11 @@ export default async function Leaderboard({location}: LeaderboardProps) {
             <th>Username</th>
             <th>Location</th>
             <th>Wins</th>
-            <th>Stat #1</th>
-            <th>Stat #2</th>
+            <th>Highest score</th>
           </tr>
         </thead>
         <tbody>
-          {allTimeData.map(renderAllTimeRow)}
+          {allTimeList.map(renderRow)}
         </tbody>
       </table>
     </div>
