@@ -23,9 +23,9 @@ export async function getLeaderboardData() {
   const { data: allTimeData, error: allTimeError } = await supabase
     .from("player")
     .select("name, location, wins, highest_score")
-    // .ilike("location", `%%`)
-    .order("highest_score", { ascending: true })
-    .order("wins", { ascending: true })
+    .ilike("location", `%%`)
+    .order("wins", { ascending: false })
+    .order("highest_score", { ascending: false })
     .limit(5)
     // should be .order("wins", { ascending: false })
     // .order("highest_score", { ascending: false })
