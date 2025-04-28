@@ -35,7 +35,7 @@ export default function HomeView({ isSpotifyConnected, onSpotifyConnect }: HomeV
               <span>Connected to Spotify</span>
             </div>
           )}
-          {!isSpotifyConnected ? (
+          {isSpotifyConnected ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -46,7 +46,7 @@ export default function HomeView({ isSpotifyConnected, onSpotifyConnect }: HomeV
                       disabled={!isSpotifyConnected}
                       className="w-full"
                     >
-                      <Link href="/protected/new-game">New game</Link>
+                      <Link href="/protected/new-game/tutorial">New game</Link>
                     </Button>
                   </div>
                 </TooltipTrigger>
@@ -56,8 +56,11 @@ export default function HomeView({ isSpotifyConnected, onSpotifyConnect }: HomeV
               </Tooltip>
             </TooltipProvider>
           ) : (
+            // <Button asChild size="lg" variant="secondary">
+            //   <Link href="/protected/new-game">New game</Link>
+            // </Button>
             <Button asChild size="lg" variant="secondary">
-              <Link href="/protected/new-game">New game</Link>
+              <Link href="/protected/new-game/tutorial">New game</Link>
             </Button>
           )}
           <Button asChild size="lg" variant="secondary">
