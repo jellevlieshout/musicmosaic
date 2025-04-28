@@ -1,18 +1,6 @@
 "use client";
 
-import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Song, Playlist } from '@/utils/types';
 import Link from 'next/link';
 
 export default function GameTutorialView() {
@@ -25,9 +13,7 @@ export default function GameTutorialView() {
         <div>
             <h2 className="neon-tubes-styling text-2xl mb-6 text-center">Objective</h2>
             <p>
-                Each player takes a turn listening to a song and deciding where in their music timeline that song 
-                falls. For every correct guess, the player gets to keep that song and slowly build a bigger collection of music. 
-                The first player to reach the winning number of cards is the winner. 
+                To build the biggest music collection timeline. First player to fill their timeline wins!
             </p>
         </div>
         <div>
@@ -66,7 +52,8 @@ export default function GameTutorialView() {
                 <br/>
                 <p>
                     Once locked in, the card is revealed. If the guess was correct, you get the card added to your timeline. If another
-                    player successfully stole it, it is added to their timeline. 
+                    player successfully stole it, it is added to their timeline. If playing with the song name bonus, make sure to add 
+                    those points as well. 
                 </p>
             </div>
         </div>
