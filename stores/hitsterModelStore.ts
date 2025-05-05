@@ -52,7 +52,11 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
 
     setPlaylist: (playlist: Song[]) => {
         function addHasBeenPlayedField(song: Song): Song {
-            return { ...song, hasBeenPlayed: false }
+            // add hasBeenPlayed field if it doesn't exist in the playlist yet
+            if (!('hasBeenPlayed' in song)) {
+                return { ...song, hasBeenPlayed: false }
+            }
+            return song
         }
         const updatedPlaylist = playlist.map(addHasBeenPlayedField)
         set({ currentPlaylist: updatedPlaylist })
