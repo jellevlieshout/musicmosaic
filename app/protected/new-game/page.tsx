@@ -44,6 +44,21 @@ export default function NewGamePresenter() {
 
   const fetchUserPlaylists = async () => {
     try {
+      // // First search for the All Out 2000s playlist
+      // const searchResponse = await fetch('https://api.spotify.com/v1/search?q=All%20Out&type=playlist', {
+      //   headers: {
+      //     Authorization: `Bearer ${accessToken}`,
+      //   },
+      // });
+
+      // if (!searchResponse.ok) {
+      //   throw new Error('Failed to search playlists');
+      // }
+
+      // const searchData = await searchResponse.json();
+      // console.log('Search response:', searchData);
+
+      // Then fetch user's playlists
       const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=50', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -57,11 +72,45 @@ export default function NewGamePresenter() {
       const data = await response.json();
 
     
-      const formattedPlaylists = data.items.map((playlist: any) => ({
+      let formattedPlaylists = data.items.map((playlist: any) => ({
         id: playlist.id,
         name: playlist.name,
         songs: [], // We'll fetch songs when a playlist is selected
       }));
+
+      // Add default playlists
+      formattedPlaylists.push(
+        {
+          id: '47bfM4cUBw6au9hK2PDJMt',
+          name: 'All Out 2000s - MusicMosaic',
+          songs: [],
+        },
+        {
+          id: '5FhZptY3DqIdAf62fc7OTb',
+          name: 'All Out 1990s - MusicMosaic',
+          songs: [],
+        },
+        {
+          id: '4W3NFU1efnGhOA4GRc331c',
+          name: 'All Out 2010s - MusicMosaic',
+          songs: [],
+        }
+      );
+
+      // Remove duplicate playlists by ID
+      const uniquePlaylists = [];
+      const playlistIds = new Set();
+      
+      for (const playlist of formattedPlaylists) {
+        if (!playlistIds.has(playlist.id)) {
+          playlistIds.add(playlist.id);
+          uniquePlaylists.push(playlist);
+        }
+      }
+      
+      // Replace the array with deduplicated version
+      formattedPlaylists = uniquePlaylists;
+      
 
       setPlaylists(formattedPlaylists);
     } catch (error) {
@@ -84,6 +133,7 @@ export default function NewGamePresenter() {
 
   const handlePlaylistSelect = async (playlistId: string) => {
     setSelectedPlaylist(playlistId);
+    console.log('playlistId', playlistId);
     
     try {
       const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
