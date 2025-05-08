@@ -25,6 +25,7 @@ export function useGameOverEffect(gameId: string) {
     const highestScoreValue = Math.max(...scoresMap.map((p) => p.score));
 
     const winners = scoresMap.filter((p) => p.score === highestScoreValue);
+    const winnerNames = winners.map(w => w.name);
 
     // save data in database
     const syncScores = async () => {
@@ -83,6 +84,12 @@ export function useGameOverEffect(gameId: string) {
           console.log(`Score & wins saved for ${player.name}`);
         }
       }
+
+      
+      //mark game as finished for ongoing-games purposes
+      await supabase.from("gameplay_states")
+      .update({ game_winner: winnerNames, game_finished: true, ended_at: new Date().toISOString() })
+      .eq("id", gameId);
     };
     syncScores();
   }, [currentPlayers, gameSettings, gameId]);

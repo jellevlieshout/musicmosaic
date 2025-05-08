@@ -5,6 +5,16 @@ import { GameSettings, Player, Song } from "@/utils/types";
 import { Pause, Play, Square, StopCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+  } from "@/components/ui/dialog";
+import { useGameplayStore } from "@/stores/hitsterModelStore";
 
 interface GameplayProps {
   currentPlayers: Player[] | null,
@@ -43,6 +53,13 @@ export default function GameplayView({
   const [gameMessage, setGameMessage] = useState('Select a card')
   const [roundOver, setRoundOver] = useState(false)
   const [winner, setWinner] = useState<Player | undefined>(undefined)
+  const [openPause, setOpenPause] = useState(false);
+  const router = useRouter();
+
+  // Zustand actions
+  const pauseGame = useGameplayStore((s) => s.pauseGame);
+  const resumeGame = useGameplayStore((s) => s.resumeGame);
+  const restartGame = useGameplayStore((s) => s.restartGame);
 
   useEffect(() => {
     if (currentSongId) {
@@ -101,6 +118,25 @@ export default function GameplayView({
     goToNextPlayer()
     setGameMessage('Select a card')
     setRoundOver(false)
+  }
+
+  function openPauseDialog() {
+        pauseGame();
+        setOpenPause(true);
+  }
+
+  function handleResume() {
+        resumeGame();
+        setOpenPause(false);
+  }
+
+  function handleRestart() {
+        restartGame();
+        setOpenPause(false);
+  }
+
+  function handleQuit() {
+      router.push("/protected/home");
   }
 
   if (isLoading) {
@@ -178,6 +214,36 @@ export default function GameplayView({
                 Next Player
               </Button>
             )}
+
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={openPauseDialog}
+              className="absolute top-4 right-4"
+            >
+              <Pause />
+            </Button>
+            <Dialog open={openPause} onOpenChange={setOpenPause}>
+              <DialogContent className="max-w-[300px] text-center">
+                <DialogHeader>
+                  <DialogTitle className="neon-tubes-styling text-2xl">
+                    Game paused
+                  </DialogTitle>
+                </DialogHeader>
+
+                <div className="flex flex-col gap-3 py-4">
+                  <Button onClick={handleResume}>Resume</Button>
+                  <Button variant="secondary" onClick={handleRestart}>
+                    Restart
+                  </Button>
+                  <Button variant="destructive" onClick={handleQuit}>
+                    Quit
+                  </Button>
+                </div>
+
+                <DialogFooter />
+              </DialogContent>
+            </Dialog>
             <Timeline 
                 currentSong={currentPlaylist?.find((song) => currentSongId === song.id)} 
                 deck={currentPlayers?.find((play) => currentPlayerId === play.id)?.deck}

@@ -59,10 +59,18 @@ export default function HomeView({ isSpotifyConnected, onSpotifyConnect }: HomeV
             <Button asChild size="lg" variant="secondary">
               <Link href="/protected/new-game">New game</Link>
             </Button>
+            
           )}
+        <Button asChild size="lg" variant="secondary">
+          <Link href="/protected/ongoing-games">Ongoing games</Link>
+        </Button>
+        <Button asChild size="lg" variant="secondary">
+            <Link href="/protected/previous-games">Previous games</Link>
+          </Button>
           <Button asChild size="lg" variant="secondary">
             <Link href="/protected/leaderboard">View rankings</Link>
           </Button>
+        
         </div>
       </div>
     </>
