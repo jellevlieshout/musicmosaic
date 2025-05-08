@@ -7,46 +7,56 @@ import { useGameplayStore } from "@/stores/hitsterModelStore";
  * @returns A promise that resolves with the game ID when the state is loaded
  */
 export async function loadGameState(gameId: string | null): Promise<string> {
-  try {
-    const supabase = createClient();
-    let data;
-    
-    if (gameId) {
-      // Fetch existing game state
-      const { data: existingData, error } = await supabase
-        .from('gameplay_states')
-        .select('*')
-        .eq('id', gameId)
-        .single();
-      
-      if (error) throw error;
-      if (!existingData) throw new Error('Game not found');
-      
-      data = existingData;
+  const supabase = createClient();
+
+  /* 1. aktuell användare */
+  const { data: { user }, error: authErr } = await supabase.auth.getUser();
+  if (authErr) throw authErr;
+  if (!user) throw new Error("No signed‑in user");
+
+  let data: any;
+
+  if (gameId) {
+    /* Continue‑flödet */
+    const { data: existing, error } = await supabase
+      .from("gameplay_states")
+      .select("*")
+      .eq("id", gameId)
+      .eq("user_id", user.id)
+      .single();
+
+    if (error) throw error;
+    if (!existing) throw new Error("Game not found");
+    data = existing;
+  } else {
+    /* New‑game – återanvänd rad om den inte är avslutad */
+    const { data: unfinished, error } = await supabase
+      .from("gameplay_states")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("game_finished", false)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (unfinished) {
+      data = unfinished;
     } else {
-      // Create a new game
-      const { data: newData, error } = await supabase
-        .from('gameplay_states')
-        .insert({
-          game_settings: null,
-          current_playlist: null,
-          current_players: null,
-          current_player_id: null,
-          current_song_id: null
-        })
+      const { data: newGame, error: insertErr } = await supabase
+        .from("gameplay_states")
+        .insert({ game_finished: false })
         .select()
         .single();
 
-      
-      if (error) throw error;
-      if (!newData) throw new Error('Failed to create new game');
-      
-      // Reset the model before creating a new game to ensure a clean state
-      const { resetModel } = useGameplayStore.getState();
-      resetModel();
+      if (insertErr) throw insertErr;
+      if (!newGame) throw new Error("Failed to create new game");
 
-      data = newData;
+      useGameplayStore.getState().resetModel();
+      data = newGame;
     }
+  }
     
     // Update the Zustand store with the loaded state
     const { setPlaylist, seatPlayersInRandomOrder, setGameSettings } = useGameplayStore.getState();
@@ -71,10 +81,5 @@ export async function loadGameState(gameId: string | null): Promise<string> {
       setGameSettings(data.game_settings);
     }
     
-    console.log('Game state loaded successfully');
     return data.id;
-  } catch (error) {
-    console.error('Error in loadGameState:', error);
-    throw error;
   }
-} 

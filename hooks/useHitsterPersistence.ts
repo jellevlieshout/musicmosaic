@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { initializeHitsterObserver, HitsterObserver } from '@/utils/supabase/hitsterObserver';
 import { loadGameState } from '@/utils/supabase/hitsterLoader';
 import { useGameplayStore } from '@/stores/hitsterModelStore';
@@ -14,14 +14,21 @@ export function useHitsterPersistence(gameId: string | null) {
   const [observer, setObserver] = useState<HitsterObserver | null>(null);
   const [currentGameId, setCurrentGameId] = useState<string | null>(null);
   const { setGameSettings, setPlaylist } = useGameplayStore();
+  const hasCreated = useRef(false); 
 
   useEffect(() => {
     let isMounted = true;
 
     async function initialize() {
+      if(!gameId && hasCreated.current){
+         return
+      } 
       try {
         // Load or create game state from Supabase
         const newGameId = await loadGameState(gameId);
+        if (!gameId){
+          hasCreated.current = true;   // flagga att vi har skapat
+        }
         
         if (isMounted) {
           setCurrentGameId(newGameId);
