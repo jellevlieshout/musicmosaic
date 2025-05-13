@@ -13,9 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Song, Playlist } from '@/utils/types';
-import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import Link from 'next/link';
 
 interface NewGameViewProps {
   playlists: Playlist[];
@@ -151,11 +150,6 @@ export default function NewGameView({
               <SelectValue placeholder="Songs per player" />
             </SelectTrigger>
             <SelectContent>
-              {/* {gameLengthOptions.map((num) => (
-                <SelectItem key={num} value={num.toString()}>
-                  {num} songs per player
-                </SelectItem>
-              ))} */}
                 <SelectItem key={3} value={'3'}>
                   Quick game - 3 cards to win
                 </SelectItem>
@@ -172,15 +166,19 @@ export default function NewGameView({
           </Select>
         </div>
         <div className='flex flex-row justify-between'>
-            <Button className={`mt-6`}>
-            <Link href="/protected/new-game/tutorial"><ChevronLeft/></Link>
+            <Button
+                variant="outline"
+                onClick={() => window.history.back()}
+                className="neon-glow-box-shadow"
+            >
+            ← Back
             </Button>
             <Button
-                className={`mt-6 ${isFormValid ? ' text-black' : 'opacity-50'}`}
                 onClick={onSubmit}
                 disabled={!isFormValid}
-                >
-            <ChevronRight/>
+                className={`${isFormValid ? 'text-black' : 'opacity-50'}`}
+            >
+                Next →
             </Button>
         </div>
         

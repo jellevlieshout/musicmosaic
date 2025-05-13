@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import NewGameView from "@/views/NewGameView";
 import { useGameplayStore } from '@/stores/hitsterModelStore';
-import { useHitsterPersistence } from '@/hooks/useHitsterPersistence';
 import { useSpotifyStore } from '@/stores/spotifyStore';
 import { Song } from '@/utils/types';
 
@@ -25,10 +24,11 @@ export default function NewGamePresenter() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(true);
 
+  const searchParams = useSearchParams();
+  const gameId = searchParams.get('gameId');
+
   const accessToken = useSpotifyStore((state) => state.accessToken);
-  const setPlaylist = useGameplayStore((state) => state.setPlaylist);
-  const setGameSettings = useGameplayStore((state) => state.setGameSettings);
-  const { isLoading, error, gameId } = useHitsterPersistence(null);
+  const { setPlaylist, setGameSettings, initializaPlayerDecks } = useGameplayStore();
 
   useEffect(() => {
     if (accessToken) {
@@ -165,8 +165,8 @@ export default function NewGamePresenter() {
   };
 
   const handleSubmit = () => {
-    if (!isFormValid || !gameId) return;
-    
+    if (!gameId || !isFormValid) return;
+
     const selectedPlaylistData = playlists.find(p => p.id === selectedPlaylist);
     if (!selectedPlaylistData) return;
 
@@ -178,27 +178,24 @@ export default function NewGamePresenter() {
     });
     setPlaylist(selectedPlaylistData.songs);
 
-    router.push(`/protected/new-game/players?gameId=${gameId}`);
+    initializaPlayerDecks()
+
+    // Navigate to gameplay
+    router.push(`/protected/gameplay/${gameId}`);
   };
 
-  if (isLoading || isLoadingPlaylists) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   return (
-    <NewGameView
-      playlists={playlists}
-      onLocationChange={handleLocationChange}
-      onPlaylistSelect={handlePlaylistSelect}
-      onAllowStealsChange={handleAllowStealsChange}
-      onSongNameBonusChange={handleSongNameBonusChange}
-      onGameLengthChange={handleGameLengthChange}
-      onSubmit={handleSubmit}
-      isFormValid={isFormValid}
-    />
+    <Suspense fallback={<div>Loading....</div>}>
+      <NewGameView
+        playlists={playlists}
+        onLocationChange={handleLocationChange}
+        onPlaylistSelect={handlePlaylistSelect}
+        onAllowStealsChange={handleAllowStealsChange}
+        onSongNameBonusChange={handleSongNameBonusChange}
+        onGameLengthChange={handleGameLengthChange}
+        onSubmit={handleSubmit}
+        isFormValid={isFormValid}
+      />
+    </Suspense>
   );
 }

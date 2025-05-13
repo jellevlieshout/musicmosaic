@@ -55,11 +55,15 @@ export default function GameTutorialView() {
                     player successfully stole it, it is added to their timeline. If playing with the song name bonus, make sure to add 
                     those points as well. 
                 </p>
+                <br/>
+                <p>
+                    The game ends when the first person fills their timeline and wins. 
+                </p>
             </div>
         </div>
 
         <Button className="mt-6">
-          <Link href="/protected/new-game">Get started</Link>
+          <Link href="/protected/new-game/players">Get started</Link>
         </Button>
       </div>
     </div>
