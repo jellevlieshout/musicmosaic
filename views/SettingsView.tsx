@@ -2,9 +2,10 @@ import '@/app/globals.css';
 
 type SettingsViewProps = {
   location: string;
+  email: string;
 };
 
-export default async function SettingsView({location}: SettingsViewProps) {
+export default async function SettingsView({location, email}: SettingsViewProps) {
 
   return (
     <>
@@ -27,8 +28,9 @@ export default async function SettingsView({location}: SettingsViewProps) {
               Email
             </label>
             <input
-              type="email"
+              type="text"
               id="email"
+              value = {email}
               placeholder="manzari@kth.se"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none neon-glow-box-shadow"
             />
