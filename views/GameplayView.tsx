@@ -108,7 +108,7 @@ export default function GameplayView({
         setGameMessage('Correct!')
         setCurrentSongId(null)
     } else {
-        setGameMessage('Incorrect!')
+        setGameMessage(`Incorrect! The song was: ${currentSongTitle} (${currentSongYear})`)
         setCurrentSongId(null)
     }
     setRoundOver(true)
