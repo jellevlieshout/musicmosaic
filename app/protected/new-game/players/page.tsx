@@ -1,18 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useCallback, Suspense } from 'react';
+import { useRouter } from 'next/navigation';
 import PlayerSelectionView from "@/views/PlayerSelectionView";
 import { useGameplayStore} from '@/stores/hitsterModelStore';
 import { Player } from '@/utils/types';
 import { v4 as uuidv4 } from 'uuid';
+import { useHitsterPersistence } from '@/hooks/useHitsterPersistence';
 
 
 function PlayerSelectionContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const gameId = searchParams.get('gameId');
   const [isFormValid, setIsFormValid] = useState(false);
+  const { gameId } = useHitsterPersistence(null);
 
   // Get game state functions from the store
   const { seatPlayersInRandomOrder, pickRandomNewSong, addCardToPlayersDeck, goToNextPlayer } = useGameplayStore();
@@ -39,15 +39,8 @@ function PlayerSelectionContent() {
     // Save players to the store - IDs will be assigned by the backend
     seatPlayersInRandomOrder(players);
 
-    // initialize players decks with one card
-    players.forEach(() => {
-        pickRandomNewSong()
-        addCardToPlayersDeck()
-        goToNextPlayer()
-    })
-
-    // Navigate to gameplay
-    router.push(`/protected/gameplay/${gameId}`);
+    // Navigate to game settings
+    router.push(`/protected/new-game/settings?gameId=${gameId}`);
   };
 
   return (

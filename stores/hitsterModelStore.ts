@@ -13,6 +13,7 @@ export type GameplayState = {
     setPlaylist: (playlist: Song[]) => void
     setCurrentSongId: (songId: string | null) => void,
     seatPlayersInRandomOrder: (players: Player[]) => void
+    initializaPlayerDecks: () => void
     updatePlayersWithIds: (players: Player[]) => void
     pickRandomNewSong: () => void,
     playRandomNewSongFromCurrentPlaylist: () => void
@@ -72,6 +73,15 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
             .sort((a, b) => a.sort - b.sort)
             .map(({ value }) => value)
         set({ currentPlayers: shuffled, currentPlayerId: shuffled[0]?.id ?? null })
+    },
+
+    initializaPlayerDecks: () => {
+        const { currentPlayers } = get()
+        currentPlayers.forEach(() => {
+            get().pickRandomNewSong()
+            get().addCardToPlayersDeck()
+            get().goToNextPlayer()
+        })
     },
 
     updatePlayersWithIds: (players: Player[]) => {

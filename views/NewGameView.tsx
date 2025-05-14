@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Song, Playlist } from '@/utils/types';
+import { Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 interface NewGameViewProps {
   playlists: Playlist[];
@@ -86,7 +88,21 @@ export default function NewGameView({
         </div>
 
         <div className="flex items-center justify-between">
-          <Label className="neon-tubes-styling">Allow steals?</Label>
+          <div className="flex flex-row gap-2 items-center">
+            <Label className="neon-tubes-styling">Allow steals?</Label>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info size={16} color="#3b3b3b"></Info>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">
+                    In steal mode, each player is given additional steal tokens they can use to steal a misplaced card
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <Switch
             checked={allowSteals}
             onCheckedChange={(checked) => {
@@ -97,7 +113,21 @@ export default function NewGameView({
         </div>
 
         <div className="flex items-center justify-between">
-          <Label className="neon-tubes-styling">Song name bonus?</Label>
+          <div className="flex flex-row gap-2 items-center">
+            <Label className="neon-tubes-styling">Song name bonus?</Label>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info size={16} color="#3b3b3b"></Info>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">
+                    If activated, players can earn extra points for correctly guessing the name of the selected track
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <Switch
             checked={songNameBonus}
             onCheckedChange={(checked) => {
@@ -120,11 +150,6 @@ export default function NewGameView({
               <SelectValue placeholder="Songs per player" />
             </SelectTrigger>
             <SelectContent>
-              {/* {gameLengthOptions.map((num) => (
-                <SelectItem key={num} value={num.toString()}>
-                  {num} songs per player
-                </SelectItem>
-              ))} */}
                 <SelectItem key={3} value={'3'}>
                   Quick game - 3 cards to win
                 </SelectItem>
@@ -140,14 +165,23 @@ export default function NewGameView({
             </SelectContent>
           </Select>
         </div>
-
-        <Button
-          className={`w-full mt-6 ${isFormValid ? ' text-black' : 'opacity-50'}`}
-          onClick={onSubmit}
-          disabled={!isFormValid}
-        >
-          Next
-        </Button>
+        <div className='flex flex-row justify-between'>
+            <Button
+                variant="outline"
+                onClick={() => window.history.back()}
+                className="neon-glow-box-shadow"
+            >
+            ← Back
+            </Button>
+            <Button
+                onClick={onSubmit}
+                disabled={!isFormValid}
+                className={`${isFormValid ? 'text-black' : 'opacity-50'}`}
+            >
+                Next →
+            </Button>
+        </div>
+        
       </div>
     </div>
   );
