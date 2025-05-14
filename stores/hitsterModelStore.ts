@@ -9,6 +9,7 @@ export type GameplayState = {
     currentSongId: string | null
     isAudioPlayerRunning: boolean
     gameSettings: GameSettings | null
+    isPaused: boolean
 
     setPlaylist: (playlist: Song[]) => void
     setCurrentSongId: (songId: string | null) => void,
@@ -23,6 +24,9 @@ export type GameplayState = {
     addCardToPlayersDeck: () => void
     setGameSettings: (settings: { location: string, allowSteals: boolean, songNameBonus: boolean, gameLength: string }) => void
     resetModel: () => void
+    pauseGame: () => void
+    resumeGame: () => void
+    restartGame: () => void
     // revealSongDetails: () => void
     // playerWasRight: () => void
     // playerWasWrong: () => void
@@ -35,6 +39,7 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     currentSongId: null,
     isAudioPlayerRunning: false,
     gameSettings: null,
+    isPaused: false,
 
     resetModel: () => {
         set({
@@ -244,7 +249,45 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
 
       updatedPlayers[currentPlayerIndex].deck = sortDeckByYear([...currentPlayers[currentPlayerIndex].deck, currentPlaylist[currentSongIndex]])
       set({ currentPlayers: updatedPlayers, currentSongId: null })
-    }
+    },
+
+    /** Pause == stop the audio player *and* set the paused flag so that the UI
+    * can decide to show a resume/restart/quit dialog. */
+    pauseGame: () => {
+            const { stopPlayer } = get();
+            stopPlayer();
+            set({ isPaused: true });
+        },
+
+    /** Clears the paused flag so that the UI continues as normal. */
+    resumeGame: () => {
+            set({ isPaused: false });
+        },
+    
+    /**
+     * Restart keeps the current game‑settings & players but resets *progress*.
+     * We set every deck back to the initial state (one hidden start‑card) and
+     * mark all songs in the playlist as un‑played.
+     */
+    restartGame: () => {
+            const { currentPlayers, currentPlaylist } = get();
+    
+           if (!currentPlayers || !currentPlaylist) return;
+    
+            // reset playlist
+            const resetPlaylist = currentPlaylist.map((s:any) => ({ ...s, hasBeenPlayed: false }));
+    
+            // each player starts with an empty deck (index 0 == timeline start card)
+            const resetPlayers = currentPlayers.map((p:any) => ({ ...p, deck: [resetPlaylist[0]] }));
+    
+            set({
+                currentPlaylist: resetPlaylist,
+                currentPlayers: resetPlayers,
+                currentSongId: null,
+                isPaused: false,
+            });
+        },
+
 }))
 
 // Add this helper function outside the store definition
