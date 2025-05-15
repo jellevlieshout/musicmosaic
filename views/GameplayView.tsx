@@ -15,6 +15,7 @@ import {
     DialogFooter,
   } from "@/components/ui/dialog";
 import { useGameplayStore } from "@/stores/hitsterModelStore";
+import { DndContext, DragEndEvent, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 
 interface GameplayProps {
   currentPlayers: Player[] | null,
@@ -31,6 +32,7 @@ interface GameplayProps {
   goToNextPlayer: () => void,
   playRandomNewSongFromCurrentPlaylist: () => void,
   setCurrentSongId: (songId: string | null) => void,
+  setCurrentPlayers: (players: Player[] | null) => void,
 }
 
 export default function GameplayView({
@@ -48,6 +50,7 @@ export default function GameplayView({
   goToNextPlayer,
   playRandomNewSongFromCurrentPlaylist,
   setCurrentSongId,
+  setCurrentPlayers,
 }: GameplayProps) {
 
   const [gameMessage, setGameMessage] = useState('Select a card')
@@ -60,6 +63,14 @@ export default function GameplayView({
   const pauseGame = useGameplayStore((s) => s.pauseGame);
   const resumeGame = useGameplayStore((s) => s.resumeGame);
   const restartGame = useGameplayStore((s) => s.restartGame);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   useEffect(() => {
     if (currentSongId) {
@@ -90,11 +101,15 @@ export default function GameplayView({
 
   function handleCardPick(evt: React.MouseEvent<any>) {
     playRandomNewSongFromCurrentPlaylist()
-    setGameMessage('')
+    setGameMessage('Click play to hear the song, then drag it to its position in the timeline')
   }
 
-  function handlePlayClick(evt: React.MouseEvent<any>) {
-    startPlayer()
+  function handlePlayPause() {
+    if (isAudioPlayerRunning) {
+      stopPlayer()
+    } else {
+      startPlayer()
+    }
   }
 
   function handleStopClick(evt: React.MouseEvent<HTMLButtonElement>) {
@@ -139,6 +154,53 @@ export default function GameplayView({
       router.push("/protected/home");
   }
 
+  function handleCardPlacement(prevIndex: number, nextIndex: number) {
+    // Get the current player's deck
+    const currentPlayer = currentPlayers?.find((p) => currentPlayerId === p.id);
+    if (!currentPlayer || !currentSongId || !currentPlaylist || !currentPlayers) return;
+
+    const currentSong = currentPlaylist.find(song => song.id === currentSongId);
+    if (!currentSong) return;
+
+    // Create a new deck with the card inserted at the correct position
+    const newDeck = [...currentPlayer.deck];
+    newDeck.splice(nextIndex, 0, currentSong);
+
+    // Update the player's deck
+    const updatedPlayers = currentPlayers.map(p => 
+      p.id === currentPlayerId 
+        ? { ...p, deck: newDeck }
+        : p
+    );
+
+    // Update the game state with the new players array
+    setCurrentPlayers(updatedPlayers);
+    setCurrentSongId(null);
+    setGameMessage('Confirm the placement or drag the card to a different position');
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    
+    if (!currentPlayers) return;
+    
+    if (over && active.id !== over.id) {
+      // Extract the index from the drop zone ID
+      const dropZoneId = over.id as string;
+      const index = parseInt(dropZoneId.split('-')[2]);
+      
+      // Get the current player's deck
+      const currentPlayer = currentPlayers.find((p) => currentPlayerId === p.id);
+      const deck = currentPlayer?.deck || [];
+      
+      // Place the card in the timeline
+      const prevIndex = isNaN(index) ? deck.length - 1 : index - 1;
+      const nextIndex = isNaN(index) ? deck.length : index;
+      
+      handleCardPlacement(prevIndex, nextIndex);
+    }
+  }
+
   if (isLoading) {
     return <div>Loading game...</div>;
   }
@@ -173,7 +235,7 @@ export default function GameplayView({
   }
  
   return (
-    <>
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="grid grid-cols-5 gap-4 w-screen">
         <div className="col-span-1 p-4 border-r">
           {currentPlayers?.map((player: Player) => (
@@ -191,27 +253,36 @@ export default function GameplayView({
           <div className="flex flex-col items-center gap-4">
             <p className="neon-tubes-styling text-8xl">{currentPlayers?.find((p) => currentPlayerId === p.id)?.name}'s turn</p>
             <p className="neon-tubes-styling text-4xl">{gameMessage}</p>
-            {!currentSongId && !roundOver && <div onClick={handleCardPick}>
-              <GameCard />
-            </div>}
-            {isAudioPlayerRunning && (
-                <Button size="sm" variant={"secondary"} onClick={handleStopClick}>
-                    <p className="neon-tubes-styling">stop music</p>
-                </Button>
+            {!currentSongId && !roundOver && (
+              <div onClick={handleCardPick}>
+                <GameCard id="current-song" />
+              </div>
             )}
-            {isAudioPlayerRunning && currentSongId && currentSongTitle && (
-                <div>
-                    We are playing the song with ID {currentSongId}, song {currentSongTitle}
-                </div>
-            )}
-            {!isAudioPlayerRunning && currentSongId && (
-                <Button size="sm" variant={"secondary"} onClick={handlePlayClick}>
-                <p className="neon-tubes-styling">play again</p>
-                </Button>
+            {currentSongId && !roundOver && (
+              <div>
+                <GameCard 
+                  id="current-song" 
+                  isRevealed={false} 
+                  song={currentPlaylist?.find((song) => currentSongId === song.id)}
+                  isDraggable={true}
+                  isPlaying={isAudioPlayerRunning}
+                  onPlayPause={handlePlayPause}
+                />
+              </div>
             )}
             {!currentSongId && roundOver && (
               <Button variant={"secondary"} onClick={nextPlayer}>
                 Next Player
+              </Button>
+            )}
+            {isAudioPlayerRunning && (
+              <Button size="sm" variant={"secondary"} onClick={handleStopClick}>
+                <p className="neon-tubes-styling">stop music</p>
+              </Button>
+            )}
+            {!isAudioPlayerRunning && currentSongId && (
+              <Button size="sm" variant={"secondary"} onClick={handlePlayPause}>
+                <p className="neon-tubes-styling">{isAudioPlayerRunning ? 'pause' : 'play'}</p>
               </Button>
             )}
 
@@ -248,10 +319,11 @@ export default function GameplayView({
                 currentSong={currentPlaylist?.find((song) => currentSongId === song.id)} 
                 deck={currentPlayers?.find((play) => currentPlayerId === play.id)?.deck}
                 confirmPlacement={confirmPlacement}
-            ></Timeline>
+                onCardPlacement={handleCardPlacement}
+            />
           </div>
         </div>
       </div>
-    </>
+    </DndContext>
   );
 }
