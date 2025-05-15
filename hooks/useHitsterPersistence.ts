@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { initializeHitsterObserver, HitsterObserver } from '@/utils/supabase/hitsterObserver';
 import { loadGameState } from '@/utils/supabase/hitsterLoader';
 import { useGameplayStore } from '@/stores/hitsterModelStore';
+import { useHitster } from '@/contexts/HitsterContext';
 
 /**
  * Hook to manage the persistence of the Hitster game state
@@ -11,31 +11,27 @@ import { useGameplayStore } from '@/stores/hitsterModelStore';
 export function useHitsterPersistence(gameId: string | null) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [observer, setObserver] = useState<HitsterObserver | null>(null);
   const [currentGameId, setCurrentGameId] = useState<string | null>(null);
-  const { setGameSettings, setPlaylist } = useGameplayStore();
-  const hasCreated = useRef(false); 
+  const { setGameId } = useHitster();
+  const hasCreated = useRef(false);
 
   useEffect(() => {
     let isMounted = true;
 
     async function initialize() {
-      if(!gameId && hasCreated.current){
-         return
-      } 
+      if(!gameId && hasCreated.current) {
+        return;
+      }
       try {
         // Load or create game state from Supabase
         const newGameId = await loadGameState(gameId);
-        if (!gameId){
-          hasCreated.current = true;   // flagga att vi har skapat
+        if (!gameId) {
+          hasCreated.current = true;
         }
         
         if (isMounted) {
           setCurrentGameId(newGameId);
-          
-          // Initialize the observer to persist future changes
-          const newObserver = initializeHitsterObserver(newGameId);
-          setObserver(newObserver);
+          setGameId(newGameId);
           setIsLoading(false);
         }
       } catch (err) {
@@ -48,14 +44,10 @@ export function useHitsterPersistence(gameId: string | null) {
 
     initialize();
 
-    // Cleanup function
     return () => {
       isMounted = false;
-      if (observer) {
-        observer.cleanup();
-      }
     };
-  }, [gameId]);
+  }, [gameId, setGameId]);
 
   return { isLoading, error, gameId: currentGameId };
 } 
