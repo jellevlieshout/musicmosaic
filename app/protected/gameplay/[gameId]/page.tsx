@@ -15,12 +15,50 @@ interface GameplayPageProps {
 
 export default function GameplayPresenter({ params }: GameplayPageProps) {
     const unwrappedParams = React.use(params);
-    const { playRandomNewSongFromCurrentPlaylist, startPlayer, stopPlayer, goToNextPlayer, addCardToPlayersDeck, setCurrentSongId,
+    const { playRandomNewSongFromCurrentPlaylist, startPlayer, stopPlayer, goToNextPlayer, addCardToPlayersDeck, 
+            setCurrentSongId, pauseGame, resumeGame, restartGame,
             currentPlayers, currentPlayerId, currentPlaylist, currentSongId, gameSettings, isAudioPlayerRunning } = useGameplayStore();
     
     // Use the persistence hook to load and save game state
     const { isLoading, error } = useHitsterPersistence(unwrappedParams.gameId);
     useGameOverEffect(unwrappedParams.gameId);
+
+    function onStopPlayerClick() {
+        stopPlayer()
+    }
+
+    function onStartPlayerClick() {
+        startPlayer()
+    }
+
+    function onCardSelect() {
+        playRandomNewSongFromCurrentPlaylist()
+    }
+
+    function onCorrectPlacement() {
+        addCardToPlayersDeck()
+        setCurrentSongId(null)
+    }
+
+    function onIncorrectPlacement() {
+        setCurrentSongId(null)
+    }
+
+    function onNextPlayerClick() {
+        goToNextPlayer()
+    }
+
+    function onPauseGameClick() {
+        pauseGame()
+    }
+
+    function onRestartGameClick() {
+        restartGame()
+    }
+
+    function onResumeGameClick() {
+        resumeGame()
+    }
 
     return (
         <GameplayView 
@@ -32,12 +70,15 @@ export default function GameplayPresenter({ params }: GameplayPageProps) {
             isAudioPlayerRunning={isAudioPlayerRunning}
             isLoading={isLoading}
             error={error}
-            startPlayer={startPlayer}
-            stopPlayer={stopPlayer}
-            addCardToPlayersDeck={addCardToPlayersDeck}
-            goToNextPlayer={goToNextPlayer}
-            playRandomNewSongFromCurrentPlaylist={playRandomNewSongFromCurrentPlaylist}
-            setCurrentSongId={setCurrentSongId}
+            onStartPlayerClick={onStartPlayerClick}
+            onStopPlayerClick={onStopPlayerClick}
+            onCardSelect={onCardSelect}
+            onNextPlayerClick={onNextPlayerClick}
+            onCorrectPlacement={onCorrectPlacement}
+            onIncorrectPlacement={onIncorrectPlacement}
+            onPauseGameClick={onPauseGameClick}
+            onRestartGameClick={onRestartGameClick}
+            onResumeGameClick={onResumeGameClick}
         />
     )
 } 

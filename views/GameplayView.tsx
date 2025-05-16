@@ -2,11 +2,10 @@ import GameCard from "@/components/GameCard";
 import Timeline from "@/components/Timeline";
 import { Button } from "@/components/ui/button";
 import { GameSettings, Player, Song } from "@/utils/types";
-import { Pause, Play, Square, StopCircle } from "lucide-react";
+import { Pause } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client"
 import {
     Dialog,
     DialogContent,
@@ -14,7 +13,6 @@ import {
     DialogTitle,
     DialogFooter,
   } from "@/components/ui/dialog";
-import { useGameplayStore } from "@/stores/hitsterModelStore";
 
 interface GameplayProps {
   currentPlayers: Player[] | null,
@@ -25,12 +23,15 @@ interface GameplayProps {
   isAudioPlayerRunning: boolean,
   isLoading: boolean,
   error: string | null,
-  startPlayer: () => void,
-  stopPlayer: () => void,
-  addCardToPlayersDeck: () => void,
-  goToNextPlayer: () => void,
-  playRandomNewSongFromCurrentPlaylist: () => void,
-  setCurrentSongId: (songId: string | null) => void,
+  onStartPlayerClick: () => void,
+  onStopPlayerClick: () => void,
+  onCardSelect: () => void,
+  onNextPlayerClick: () => void,
+  onCorrectPlacement: () => void,
+  onIncorrectPlacement: () => void,
+  onPauseGameClick: () => void,
+  onRestartGameClick: () => void,
+  onResumeGameClick: () => void,
 }
 
 export default function GameplayView({
@@ -42,12 +43,15 @@ export default function GameplayView({
   isAudioPlayerRunning,
   isLoading,
   error,
-  startPlayer,
-  stopPlayer,
-  addCardToPlayersDeck,
-  goToNextPlayer,
-  playRandomNewSongFromCurrentPlaylist,
-  setCurrentSongId,
+  onStartPlayerClick,
+  onStopPlayerClick,
+  onCardSelect,
+  onNextPlayerClick,
+  onCorrectPlacement,
+  onIncorrectPlacement,
+  onPauseGameClick,
+  onRestartGameClick,
+  onResumeGameClick,
 }: GameplayProps) {
 
   const [gameMessage, setGameMessage] = useState('Select a card')
@@ -55,11 +59,6 @@ export default function GameplayView({
   const [winner, setWinner] = useState<Player | undefined>(undefined)
   const [openPause, setOpenPause] = useState(false);
   const router = useRouter();
-
-  // Zustand actions
-  const pauseGame = useGameplayStore((s) => s.pauseGame);
-  const resumeGame = useGameplayStore((s) => s.resumeGame);
-  const restartGame = useGameplayStore((s) => s.restartGame);
 
   useEffect(() => {
     if (currentSongId) {
@@ -88,54 +87,53 @@ export default function GameplayView({
   }
   const currentSongYear = getSongYearById(currentSongId)
 
-  function handleCardPick(evt: React.MouseEvent<any>) {
-    playRandomNewSongFromCurrentPlaylist()
+  function cardPick(evt: React.MouseEvent<any>) {
+    onCardSelect()
     setGameMessage('')
   }
 
-  function handlePlayClick(evt: React.MouseEvent<any>) {
-    startPlayer()
+  function playClick(evt: React.MouseEvent<any>) {
+    onStartPlayerClick()
   }
 
-  function handleStopClick(evt: React.MouseEvent<HTMLButtonElement>) {
-    stopPlayer()
+  function stopClick(evt: React.MouseEvent<HTMLButtonElement>) {
+    onStopPlayerClick()
   }
 
   function confirmPlacement(correct: boolean) {
-    stopPlayer()
+    onStopPlayerClick()
     if (correct) {
-        addCardToPlayersDeck()
+        onCorrectPlacement()
         setGameMessage('Correct!')
-        setCurrentSongId(null)
     } else {
+        onIncorrectPlacement()
         setGameMessage(`Incorrect! The song was: ${currentSongTitle} (${currentSongYear})`)
-        setCurrentSongId(null)
     }
     setRoundOver(true)
   }
 
   function nextPlayer() {
-    goToNextPlayer()
+    onNextPlayerClick()
     setGameMessage('Select a card')
     setRoundOver(false)
   }
 
   function openPauseDialog() {
-        pauseGame();
+        onPauseGameClick();
         setOpenPause(true);
   }
 
-  function handleResume() {
-        resumeGame();
+  function resumeGame() {
+        onResumeGameClick();
         setOpenPause(false);
   }
 
-  function handleRestart() {
-        restartGame();
+  function restartGame() {
+        onRestartGameClick();
         setOpenPause(false);
   }
 
-  function handleQuit() {
+  function quitGame() {
       router.push("/protected/home");
   }
 
@@ -191,11 +189,11 @@ export default function GameplayView({
           <div className="flex flex-col items-center gap-4">
             <p className="neon-tubes-styling text-8xl">{currentPlayers?.find((p) => currentPlayerId === p.id)?.name}'s turn</p>
             <p className="neon-tubes-styling text-4xl">{gameMessage}</p>
-            {!currentSongId && !roundOver && <div onClick={handleCardPick}>
+            {!currentSongId && !roundOver && <div onClick={cardPick}>
               <GameCard />
             </div>}
             {isAudioPlayerRunning && (
-                <Button size="sm" variant={"secondary"} onClick={handleStopClick}>
+                <Button size="sm" variant={"secondary"} onClick={stopClick}>
                     <p className="neon-tubes-styling">stop music</p>
                 </Button>
             )}
@@ -205,7 +203,7 @@ export default function GameplayView({
                 </div>
             )}
             {!isAudioPlayerRunning && currentSongId && (
-                <Button size="sm" variant={"secondary"} onClick={handlePlayClick}>
+                <Button size="sm" variant={"secondary"} onClick={playClick}>
                 <p className="neon-tubes-styling">play again</p>
                 </Button>
             )}
@@ -232,11 +230,11 @@ export default function GameplayView({
                 </DialogHeader>
 
                 <div className="flex flex-col gap-3 py-4">
-                  <Button onClick={handleResume}>Resume</Button>
-                  <Button variant="secondary" onClick={handleRestart}>
+                  <Button onClick={resumeGame}>Resume</Button>
+                  <Button variant="secondary" onClick={restartGame}>
                     Restart
                   </Button>
-                  <Button variant="destructive" onClick={handleQuit}>
+                  <Button variant="destructive" onClick={quitGame}>
                     Quit
                   </Button>
                 </div>
