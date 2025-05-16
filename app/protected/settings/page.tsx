@@ -9,6 +9,6 @@ export default async function SettingsPresenter() {
   return (
     <SettingsView 
     location = {`${loc.city}, ${loc.country}`}
-    email = {email}/>
+    email = {`${email}`}/>
   );
 }
