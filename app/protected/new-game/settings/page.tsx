@@ -6,6 +6,7 @@ import NewGameView from "@/views/NewGameView";
 import { useGameplayStore } from '@/stores/hitsterModelStore';
 import { useSpotifyStore } from '@/stores/spotifyStore';
 import { Song } from '@/utils/types';
+import { useHitsterPersistence } from '@/hooks/useHitsterPersistence';
 
 interface Playlist {
   id: string;
@@ -25,15 +26,16 @@ export default function NewGamePresenter() {
   const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(true);
 
   const searchParams = useSearchParams();
-  const gameId = searchParams.get('gameId');
+  const gameIdParam = searchParams.get('gameId');
+  const { gameId } = useHitsterPersistence(gameIdParam);
 
   const accessToken = useSpotifyStore((state) => state.accessToken);
-  const { setPlaylist, setGameSettings, initializaPlayerDecks } = useGameplayStore();
+  const { setPlaylist, setGameSettings, initializaPlayerDecks, gameSettings } = useGameplayStore();
 
   useEffect(() => {
     if (accessToken) {
       console.log('accessToken', accessToken);
-      console.log('gameId', gameId);
+      console.log('gameId', gameIdParam);
       fetchUserPlaylists();
     }
   }, [accessToken]);
@@ -187,6 +189,8 @@ export default function NewGamePresenter() {
   return (
     <Suspense fallback={<div>Loading....</div>}>
       <NewGameView
+        gameId={gameId}
+        currGameSettings={gameSettings}
         playlists={playlists}
         onLocationChange={handleLocationChange}
         onPlaylistSelect={handlePlaylistSelect}

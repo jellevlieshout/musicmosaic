@@ -4,21 +4,27 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
+import Link from 'next/link';
 
 interface PlayerSelectionViewProps {
+  gameId: string | null,
+  currentPlayers?: string[],
   onSubmit: (players: string[]) => void;
   onValidate: (players: string[]) => void;
   isFormValid: boolean;
 }
 
 export default function PlayerSelectionView({
+  gameId,
+  currentPlayers,
   onSubmit,
   onValidate,
   isFormValid
 }: PlayerSelectionViewProps) {
-  const [players, setPlayers] = useState<string[]>(["", "", ""]);  // Default 3 players
+  const [players, setPlayers] = useState<string[]>(currentPlayers && currentPlayers?.length > 0 ? currentPlayers : ["", "", ""]);  // Default 3 players
 
   useEffect(() => {
+    console.log("rendering for ", players)
     onValidate(players);
   }, [players, onValidate]);
 
@@ -78,13 +84,14 @@ export default function PlayerSelectionView({
         </Button>
 
         <div className="flex justify-between mt-8">
-          <Button
-            variant="outline"
-            onClick={() => window.history.back()}
-            className="neon-glow-box-shadow"
-          >
-            ← Back
-          </Button>
+          <Link href={`/protected/new-game/tutorial?gameId=${gameId}`}>
+            <Button
+              variant="outline"
+              className="neon-glow-box-shadow"
+            >
+              ← Back
+            </Button>
+          </Link>
           <Button
             onClick={handleSubmit}
             disabled={!isFormValid}

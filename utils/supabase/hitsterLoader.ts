@@ -57,6 +57,7 @@ export async function loadGameState(gameId: string | null): Promise<string> {
       data = newGame;
     }
   }
+    console.log(data)
     
     // Update the Zustand store with the loaded state
     const { setPlaylist, seatPlayersInRandomOrder, setGameSettings } = useGameplayStore.getState();

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useCallback, Suspense, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import PlayerSelectionView from "@/views/PlayerSelectionView";
 import { useGameplayStore} from '@/stores/hitsterModelStore';
 import { Player } from '@/utils/types';
@@ -12,10 +12,12 @@ import { useHitsterPersistence } from '@/hooks/useHitsterPersistence';
 function PlayerSelectionContent() {
   const router = useRouter();
   const [isFormValid, setIsFormValid] = useState(false);
-  const { gameId } = useHitsterPersistence(null);
-
+  const searchParams = useSearchParams();
+  const gameIdParam = searchParams.get('gameId');
+  const { gameId } = useHitsterPersistence(gameIdParam);
+  
   // Get game state functions from the store
-  const { seatPlayersInRandomOrder, pickRandomNewSong, addCardToPlayersDeck, goToNextPlayer } = useGameplayStore();
+  const { seatPlayersInRandomOrder, currentPlayers } = useGameplayStore();
 
   const validatePlayers = useCallback((players: string[]) => {
     // At least one player with a non-empty name
@@ -45,6 +47,8 @@ function PlayerSelectionContent() {
 
   return (
     <PlayerSelectionView
+      gameId={gameId}
+      currentPlayers={currentPlayers?.map((p) => p.name)}
       onSubmit={handleSubmit}
       onValidate={validatePlayers}
       isFormValid={isFormValid}
