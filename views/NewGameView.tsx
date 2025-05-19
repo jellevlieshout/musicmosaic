@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,12 +12,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Song, Playlist } from '@/utils/types';
+import { Song, Playlist, GameSettings } from '@/utils/types';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import Link from 'next/link';
 
 interface NewGameViewProps {
+  gameId: string | null,
   playlists: Playlist[];
+  currGameSettings?: GameSettings | null;
   onLocationChange: (location: string) => void;
   onPlaylistSelect: (playlistId: string) => void;
   onAllowStealsChange: (allowSteals: boolean) => void;
@@ -28,7 +31,9 @@ interface NewGameViewProps {
 }
 
 export default function NewGameView({
+  gameId,
   playlists,
+  currGameSettings,
   onLocationChange,
   onPlaylistSelect,
   onAllowStealsChange,
@@ -37,13 +42,22 @@ export default function NewGameView({
   isFormValid,
   gameStarted
 }: NewGameViewProps) {
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
-  const [allowSteals, setAllowSteals] = useState(false);
-  const [gameLength, setGameLength] = useState('');
+  const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
+  const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
 
-  // Game length options
-  const gameLengthOptions = Array.from({ length: 16 }, (_, i) => i + 5);
+  useEffect(() => {
+    if (currGameSettings && currGameSettings.location) {
+      setLocation(currGameSettings.location);
+    }
+    if (currGameSettings && currGameSettings.allowSteals) {
+      setAllowSteals(currGameSettings.allowSteals);
+    }
+    if (currGameSettings && currGameSettings.gameLength) {
+      setGameLength(currGameSettings.gameLength);
+    }
+  }, [currGameSettings]);
 
   return (
     <div className="max-w-md mx-auto p-6">
@@ -144,20 +158,27 @@ export default function NewGameView({
           </Select>
         </div>
         <div className='flex flex-row justify-between'>
-            <Button
-                variant="outline"
-                onClick={() => window.history.back()}
-                className="neon-glow-box-shadow"
-            >
-            ← Back
-            </Button>
-            <Button
+            <Link href={`/protected/new-game/players?gameId=${gameId}`}>
+                <Button
+                    variant="outline"
+                    className="neon-glow-box-shadow"
+                >
+                ← Back
+                </Button>
+            </Link>
+
+            {!gameStarted && <Button
                 onClick={onSubmit}
                 disabled={!isFormValid}
                 className={`${isFormValid ? 'text-black' : 'opacity-50'}`}
             >
-                Next →
-            </Button>
+                Start →
+            </Button>}
+            {gameStarted && <Link href={`/protected/gameplay/${gameId}`}>
+              <Button>
+                  Resume →
+              </Button>
+            </Link>}
         </div>
         
       </div>

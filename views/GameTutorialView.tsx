@@ -3,7 +3,13 @@
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 
-export default function GameTutorialView() {
+interface GameTutorialViewProps {
+    gameId: string | null,
+}
+
+export default function GameTutorialView({
+    gameId,
+  }: GameTutorialViewProps) {
 
   return (
     <div className="max-w-4xl p-6">
@@ -60,7 +66,7 @@ export default function GameTutorialView() {
         </div>
 
         <Button className="mt-6">
-          <Link href="/protected/new-game/players">Get started</Link>
+          <Link href={`/protected/new-game/players?gameId=${gameId}`}>Get started</Link>
         </Button>
       </div>
     </div>

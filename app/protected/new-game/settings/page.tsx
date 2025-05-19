@@ -6,6 +6,7 @@ import NewGameView from "@/views/NewGameView";
 import { useGameplayStore } from '@/stores/hitsterModelStore';
 import { useSpotifyStore } from '@/stores/spotifyStore';
 import { Song } from '@/utils/types';
+import { useHitsterPersistence } from '@/hooks/useHitsterPersistence';
 
 interface Playlist {
   id: string;
@@ -32,15 +33,16 @@ function NewGameSettingsContent() {
   const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(true);
 
   const searchParams = useSearchParams();
-  const gameId = searchParams.get('gameId');
+  const gameIdParam = searchParams.get('gameId');
+  const { gameId } = useHitsterPersistence(gameIdParam);
 
   const accessToken = useSpotifyStore((state) => state.accessToken);
-  const { setPlaylist, setGameSettings, initializaPlayerDecks, setGameHasStarted, gameHasStarted } = useGameplayStore();
+  const { setPlaylist, setGameSettings, initializaPlayerDecks, setGameHasStarted, gameHasStarted, gameSettings } = useGameplayStore();
 
   useEffect(() => {
     if (accessToken) {
       console.log('accessToken', accessToken);
-      console.log('gameId', gameId);
+      console.log('gameId', gameIdParam);
       fetchUserPlaylists();
     }
   }, [accessToken]);
@@ -189,6 +191,8 @@ function NewGameSettingsContent() {
   return (
     <NewGameView
       playlists={playlists}
+      gameId={gameId}
+      currGameSettings={gameSettings}
       onLocationChange={handleLocationChange}
       onPlaylistSelect={handlePlaylistSelect}
       onAllowStealsChange={handleAllowStealsChange}

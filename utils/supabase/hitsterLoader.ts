@@ -15,7 +15,6 @@ export async function loadGameState(gameId: string | null): Promise<string> {
   if (!user) throw new Error("No signed‑in user");
 
   let data: any;
-
   if (gameId) {
     /* Continue‑flödet */
     const { data: existing, error } = await supabase
