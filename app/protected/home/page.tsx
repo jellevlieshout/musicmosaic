@@ -14,6 +14,7 @@ export default function HomePresenter() {
   const isSpotifyConnected = !!accessToken;
 
   useEffect(() => {
+    
     // Get the access token from the URL hash
     const hash = window.location.hash;
     if (hash) {

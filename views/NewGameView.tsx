@@ -61,16 +61,18 @@ export default function NewGameView({
   }, [currGameSettings]);
 
   useEffect(() => {
-    async function fetchLocation() {
-      try {
-        const loc = await getUserLocation();
-        const locationString = `${loc.city}, ${loc.country}`;
-        setLocation(locationString);
-        onLocationChange(locationString);
-      } catch (error) {
-        console.error("Failed to fetch location:", error);
-      }
-    }
+    function fetchLocation() {
+        fetch('http://ip-api.com/json/?fields=status,message,query,city,regionName,country,countryCode,lat,lon,timezone')
+        .then(response => response.json())
+        .then(data => {
+          console.log("LOCATION DATA:", data);
+          setLocation(data.city + ", " + data.country);
+          onLocationChange(data.city + ", " + data.country);
+        })
+        .catch(error => {
+          console.error("Failed to fetch location:", error);
+        });
+      } 
   
     fetchLocation();
   }, []);
