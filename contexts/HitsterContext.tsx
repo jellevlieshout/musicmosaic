@@ -14,8 +14,8 @@ export function HitsterProvider({ children }: { children: React.ReactNode }) {
   const [currentGameId, setCurrentGameId] = useState<string | null>(null);
 
   const setGameId = useCallback((gameId: string) => {
-    // Only reinitialize if the game ID has changed
-    if (gameId === currentGameId) { //TODO
+    // Prevent unnecessary reinitialization if the game ID hasn't changed
+    if (gameId === currentGameId) {
       return;
     }
 
