@@ -25,6 +25,5 @@ export type Playlist = {
 
 export type GameSettings = {
     location: string
-    allowSteals: boolean
     gameLength: string
 }
