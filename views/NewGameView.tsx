@@ -199,13 +199,18 @@ export default function NewGameView({
                 </Button>
             </Link>
 
-            <Button
+            {!gameStarted && <Button
                 onClick={onSubmit}
                 disabled={!isFormValid}
                 className={`${isFormValid ? 'text-black' : 'opacity-50'}`}
             >
                 Start →
-            </Button>
+            </Button>}
+            {gameStarted && <Link href={`/protected/gameplay/${gameId}`}>
+              <Button>
+                  Resume →
+              </Button>
+            </Link>}
         </div>
         
       </div>
