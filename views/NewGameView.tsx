@@ -29,6 +29,7 @@ interface NewGameViewProps {
   onSubmit: () => void;
   isFormValid: boolean;
   gameStarted: boolean;
+  locationProp: string;
 }
 
 export default function NewGameView({
@@ -41,12 +42,13 @@ export default function NewGameView({
   onGameLengthChange,
   onSubmit,
   isFormValid,
-  gameStarted
+  gameStarted,
+  locationProp
 }: NewGameViewProps) {
-  const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
   const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
+  const [location, setLocation] = useState(locationProp ?? '');
 
   useEffect(() => {
     if (currGameSettings && currGameSettings.location) {
@@ -59,23 +61,8 @@ export default function NewGameView({
       setGameLength(currGameSettings.gameLength);
     }
   }, [currGameSettings]);
-
-  useEffect(() => {
-    function fetchLocation() {
-        fetch('http://ip-api.com/json/?fields=status,message,query,city,regionName,country,countryCode,lat,lon,timezone')
-        .then(response => response.json())
-        .then(data => {
-          console.log("LOCATION DATA:", data);
-          setLocation(data.city + ", " + data.country);
-          onLocationChange(data.city + ", " + data.country);
-        })
-        .catch(error => {
-          console.error("Failed to fetch location:", error);
-        });
-      } 
   
-    fetchLocation();
-  }, []);
+
   
 
   return (

@@ -51,6 +51,21 @@ function NewGameSettingsContent() {
     validateForm();
   }, [location, selectedPlaylist, gameLength]);
 
+  useEffect(() => {
+    function fetchLocation() {
+        fetch(`https://api.ipgeolocation.io/v2/ipgeo?apiKey=${process.env.NEXT_PUBLIC_LOCATION_API_KEY}`)
+        .then(response => response.json())
+        .then(data => {
+          setLocation(data.location?.city + ", " + data.location?.country_name);
+        })
+        .catch(error => {
+          console.error("Failed to fetch location:", error);
+        });
+      } 
+  
+    fetchLocation();
+  }, []);
+
   const fetchUserPlaylists = async () => {
     try {
       const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=50', {
@@ -200,6 +215,7 @@ function NewGameSettingsContent() {
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
       gameStarted={gameHasStarted}
+      locationProp={location}
     />
   );
 }
