@@ -36,7 +36,7 @@ function NewGameSettingsContent() {
   const gameId = searchParams.get('gameId');
 
   const accessToken = useSpotifyStore((state) => state.accessToken);
-  const { setPlaylist, setGameSettings, initializaPlayerDecks } = useGameplayStore();
+  const { setPlaylist, setGameSettings, initializaPlayerDecks, setGameHasStarted, gameHasStarted } = useGameplayStore();
 
   useEffect(() => {
     if (accessToken) {
@@ -185,7 +185,7 @@ function NewGameSettingsContent() {
       gameLength
     });
     setPlaylist(selectedPlaylistData.songs);
-
+    setGameHasStarted(true);
     initializaPlayerDecks()
 
     // Navigate to gameplay
@@ -202,6 +202,7 @@ function NewGameSettingsContent() {
       onGameLengthChange={handleGameLengthChange}
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
+      gameStarted={gameHasStarted}
     />
   );
 }

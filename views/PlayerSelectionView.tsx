@@ -9,9 +9,11 @@ interface PlayerSelectionViewProps {
   onSubmit: (players: string[]) => void;
   onValidate: (players: string[]) => void;
   isFormValid: boolean;
+  gameStarted: boolean;
 }
 
 export default function PlayerSelectionView({
+  gameStarted,
   onSubmit,
   onValidate,
   isFormValid
@@ -51,6 +53,7 @@ export default function PlayerSelectionView({
         {players.map((player, index) => (
           <div key={index} className="flex items-center space-x-2">
             <Input
+              disabled={gameStarted}
               placeholder={`Player ${index + 1}`}
               value={player}
               onChange={(e) => handlePlayerChange(index, e.target.value)}
@@ -58,6 +61,7 @@ export default function PlayerSelectionView({
             />
             {players.length > 1 && (
               <Button
+                disabled={gameStarted}
                 variant="ghost"
                 size="icon"
                 onClick={() => removePlayer(index)}
@@ -73,6 +77,7 @@ export default function PlayerSelectionView({
           variant="outline"
           onClick={addPlayer}
           className="w-full neon-glow-box-shadow"
+          disabled={gameStarted}
         >
           Add player
         </Button>
