@@ -113,32 +113,6 @@ export default function NewGameView({
           </Select>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex flex-row gap-2 items-center">
-            <Label className="neon-tubes-styling">Allow steals?</Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info size={16} color="#3b3b3b"></Info>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-sm">
-                    In steal mode, each player is given additional steal tokens they can use to steal a misplaced card
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <Switch
-            checked={allowSteals}
-            onCheckedChange={(checked) => {
-              setAllowSteals(checked);
-              onAllowStealsChange(checked);
-            }}
-            disabled={gameStarted}
-          />
-        </div>
-
         <div className="space-y-2">
           <Label className="neon-tubes-styling">Select game length</Label>
           <Select
