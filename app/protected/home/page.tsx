@@ -19,36 +19,16 @@ export default function HomePresenter() {
     if (hash) {
       const token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token"))?.split("=")[1];
       if (token) {
-        setAccessToken(token);
-        // Clear the hash from the URL
-        window.location.hash = "";
-      }
-    }
-
-    // Test if the current token is valid
-    if (accessToken) {
-      fetch('https://api.spotify.com/v1/me', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then(response => {
-        if (!response.ok) {
-          // Token is invalid, clear it
-          setAccessToken(null);
-          setDisplayName(null);
-          return;
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data) {
-          setDisplayName(data.display_name);
-          
-          // Check if user has Premium
-          if (data.product !== 'premium') {
-            toast.error('Unfortunately, this app requires a Spotify Premium account to work. Please upgrade your account to continue.', {
-              duration: 5000,
+        // Test the token before setting it
+        fetch('https://api.spotify.com/v1/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(response => {
+          if (!response.ok) {
+            toast.error('Unable to connect to Spotify. Please try again.', {
+              duration: 4000,
               position: 'top-center',
               style: {
                 background: '#333',
@@ -57,22 +37,16 @@ export default function HomePresenter() {
                 borderRadius: '8px',
               },
             });
-            setAccessToken(null);
-            setDisplayName(null);
             return;
           }
-
-          // If we get here, user has Premium, now check playback scopes
-          fetch('https://api.spotify.com/v1/me/player/devices', {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          })
-          .then(devicesResponse => {
-            if (!devicesResponse.ok) {
-              console.log('Token does not have playback scopes');
-              toast.error('Unable to access playback features. Please try reconnecting to Spotify.', {
-                duration: 4000,
+          return response.json();
+        })
+        .then(data => {
+          if (data) {
+            // Check if user has Premium
+            if (data.product !== 'premium') {
+              toast.error('Unfortunately, this app requires a Spotify Premium account to work. Please upgrade your account to continue.', {
+                duration: 5000,
                 position: 'top-center',
                 style: {
                   background: '#333',
@@ -81,30 +55,67 @@ export default function HomePresenter() {
                   borderRadius: '8px',
                 },
               });
-              setAccessToken(null);
-              setDisplayName(null);
-            } else {
-              console.log('Token has playback scopes and can use Web Playback SDK');
-              toast.success('You are connected to Spotify. Use the "New Game" button to start playing.', {
-                duration: 4000,
-                position: 'top-center',
-                style: {
-                  background: '#1DB954',
-                  color: '#fff',
-                  padding: '16px',
-                  borderRadius: '8px',
-                },
-              });
+              return;
             }
+
+            // If we get here, user has Premium, now check playback scopes
+            fetch('https://api.spotify.com/v1/me/player/devices', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then(devicesResponse => {
+              if (!devicesResponse.ok) {
+                toast.error('Unable to access playback features. Please try reconnecting to Spotify.', {
+                  duration: 4000,
+                  position: 'top-center',
+                  style: {
+                    background: '#333',
+                    color: '#fff',
+                    padding: '16px',
+                    borderRadius: '8px',
+                  },
+                });
+                return;
+              }
+              
+              // If we get here, everything is valid
+              setAccessToken(token);
+              setDisplayName(data.display_name);
+              if (!accessToken) {
+                toast.success('You are connected to Spotify. Use the "New Game" button to start playing.', {
+                  duration: 4000,
+                  position: 'top-center',
+                  style: {
+                    background: '#1DB954',
+                    color: '#fff',
+                    padding: '16px',
+                    borderRadius: '8px',
+                  },
+                });
+              }
+            });
+          }
+        })
+        .catch(() => {
+          toast.error('Unable to connect to Spotify. Please try again.', {
+            duration: 4000,
+            position: 'top-center',
+            style: {
+              background: '#333',
+              color: '#fff',
+              padding: '16px',
+              borderRadius: '8px',
+            },
           });
-        }
-      })
-      .catch(() => {
-        // Error occurred, clear the token
-        setAccessToken(null);
-        setDisplayName(null);
-      });
+        });
+
+        // Clear the hash from the URL
+        window.location.hash = "";
+      }
     }
+
+
   }, [setAccessToken, accessToken]);
 
   const handleSpotifyConnect = () => {
