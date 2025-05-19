@@ -11,6 +11,7 @@ type GameplayState = {
   currentSongId: string | null;
   gameSettings: GameSettings | null;
   updatedAt: string;
+  gameStarted: boolean;
 };
 
 /**
@@ -91,6 +92,7 @@ export class HitsterObserver {
         currentSongId: state.currentSongId,
         gameSettings: state.gameSettings,
         updatedAt: new Date().toISOString(),
+        gameStarted: state.gameHasStarted
       };
 
       const { error } = await this.supabase
@@ -102,7 +104,8 @@ export class HitsterObserver {
           current_playlist: gameplayState.currentPlaylist,
           current_song_id: gameplayState.currentSongId,
           game_settings: gameplayState.gameSettings,
-          updated_at: gameplayState.updatedAt
+          updated_at: gameplayState.updatedAt,
+          game_started: gameplayState.gameStarted
         }, { onConflict: 'id' });
 
       if (error) {

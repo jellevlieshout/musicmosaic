@@ -28,6 +28,7 @@ interface NewGameViewProps {
   onGameLengthChange: (gameLength: string) => void;
   onSubmit: () => void;
   isFormValid: boolean;
+  gameStarted: boolean;
 }
 
 export default function NewGameView({
@@ -40,7 +41,8 @@ export default function NewGameView({
   onSongNameBonusChange,
   onGameLengthChange,
   onSubmit,
-  isFormValid
+  isFormValid,
+  gameStarted
 }: NewGameViewProps) {
   const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
@@ -79,6 +81,7 @@ export default function NewGameView({
               onLocationChange(e.target.value);
             }}
             className="neon-glow-box-shadow"
+            disabled={gameStarted}
           />
         </div>
 
@@ -90,6 +93,7 @@ export default function NewGameView({
               setSelectedPlaylist(value);
               onPlaylistSelect(value);
             }}
+            disabled={gameStarted}
           >
             <SelectTrigger className="neon-glow-box-shadow">
               <SelectValue placeholder="Choose a playlist" />
@@ -126,6 +130,7 @@ export default function NewGameView({
               setAllowSteals(checked);
               onAllowStealsChange(checked);
             }}
+            disabled={gameStarted}
           />
         </div>
 
@@ -151,6 +156,7 @@ export default function NewGameView({
               setSongNameBonus(checked);
               onSongNameBonusChange(checked);
             }}
+            disabled={gameStarted}
           />
         </div>
 
@@ -162,6 +168,7 @@ export default function NewGameView({
               setGameLength(value);
               onGameLengthChange(value);
             }}
+            disabled={gameStarted}
           >
             <SelectTrigger className="neon-glow-box-shadow">
               <SelectValue placeholder="Songs per player" />

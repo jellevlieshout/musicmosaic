@@ -17,7 +17,7 @@ function PlayerSelectionContent() {
   const { gameId } = useHitsterPersistence(gameIdParam);
   
   // Get game state functions from the store
-  const { seatPlayersInRandomOrder, currentPlayers } = useGameplayStore();
+  const { seatPlayersInRandomOrder, currentPlayers, gameHasStarted } = useGameplayStore();
 
   const validatePlayers = useCallback((players: string[]) => {
     // At least one player with a non-empty name
@@ -52,6 +52,7 @@ function PlayerSelectionContent() {
       onSubmit={handleSubmit}
       onValidate={validatePlayers}
       isFormValid={isFormValid}
+      gameStarted={gameHasStarted}
     />
   );
 }

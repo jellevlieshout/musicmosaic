@@ -15,6 +15,14 @@ interface Playlist {
 }
 
 export default function NewGamePresenter() {
+  return (
+    <Suspense fallback={<div>Loading....</div>}>
+      <NewGameSettingsContent />
+    </Suspense>
+  );
+}
+
+function NewGameSettingsContent() {
   const router = useRouter();
   const [location, setLocation] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
@@ -30,7 +38,7 @@ export default function NewGamePresenter() {
   const { gameId } = useHitsterPersistence(gameIdParam);
 
   const accessToken = useSpotifyStore((state) => state.accessToken);
-  const { setPlaylist, setGameSettings, initializaPlayerDecks, gameSettings } = useGameplayStore();
+  const { setPlaylist, setGameSettings, initializaPlayerDecks, setGameHasStarted, gameHasStarted, gameSettings } = useGameplayStore();
 
   useEffect(() => {
     if (accessToken) {
@@ -179,7 +187,7 @@ export default function NewGamePresenter() {
       gameLength
     });
     setPlaylist(selectedPlaylistData.songs);
-
+    setGameHasStarted(true);
     initializaPlayerDecks()
 
     // Navigate to gameplay
@@ -187,19 +195,18 @@ export default function NewGamePresenter() {
   };
 
   return (
-    <Suspense fallback={<div>Loading....</div>}>
-      <NewGameView
-        gameId={gameId}
-        currGameSettings={gameSettings}
-        playlists={playlists}
-        onLocationChange={handleLocationChange}
-        onPlaylistSelect={handlePlaylistSelect}
-        onAllowStealsChange={handleAllowStealsChange}
-        onSongNameBonusChange={handleSongNameBonusChange}
-        onGameLengthChange={handleGameLengthChange}
-        onSubmit={handleSubmit}
-        isFormValid={isFormValid}
-      />
-    </Suspense>
+    <NewGameView
+      playlists={playlists}
+      gameId={gameId}
+      currGameSettings={gameSettings}
+      onLocationChange={handleLocationChange}
+      onPlaylistSelect={handlePlaylistSelect}
+      onAllowStealsChange={handleAllowStealsChange}
+      onSongNameBonusChange={handleSongNameBonusChange}
+      onGameLengthChange={handleGameLengthChange}
+      onSubmit={handleSubmit}
+      isFormValid={isFormValid}
+      gameStarted={gameHasStarted}
+    />
   );
 }
