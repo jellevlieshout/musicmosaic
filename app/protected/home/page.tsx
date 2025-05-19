@@ -37,20 +37,42 @@ export default function HomePresenter() {
           // Token is invalid, clear it
           setAccessToken(null);
           setDisplayName(null);
-          return; // Exit early if the response is not okay...
-        } else {
-          // Test if token has playback scopes
+          return;
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data) {
+          setDisplayName(data.display_name);
+          
+          // Check if user has Premium
+          if (data.product !== 'premium') {
+            toast.error('Unfortunately, this app requires a Spotify Premium account to work. Please upgrade your account to continue.', {
+              duration: 5000,
+              position: 'top-center',
+              style: {
+                background: '#333',
+                color: '#fff',
+                padding: '16px',
+                borderRadius: '8px',
+              },
+            });
+            setAccessToken(null);
+            setDisplayName(null);
+            return;
+          }
+
+          // If we get here, user has Premium, now check playback scopes
           fetch('https://api.spotify.com/v1/me/player/devices', {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           })
           .then(devicesResponse => {
-            console.log(devicesResponse);
             if (!devicesResponse.ok) {
               console.log('Token does not have playback scopes');
-              toast.error('Unfortunately, this app requires a Spotify Premium account to work. Please upgrade your account to continue.', {
-                duration: 5000,
+              toast.error('Unable to access playback features. Please try reconnecting to Spotify.', {
+                duration: 4000,
                 position: 'top-center',
                 style: {
                   background: '#333',
@@ -60,6 +82,7 @@ export default function HomePresenter() {
                 },
               });
               setAccessToken(null);
+              setDisplayName(null);
             } else {
               console.log('Token has playback scopes and can use Web Playback SDK');
               toast.success('You are connected to Spotify. Use the "New Game" button to start playing.', {
@@ -75,13 +98,8 @@ export default function HomePresenter() {
             }
           });
         }
-        return response.json(); // ...but if OK, parse the JSON payload...
       })
-      .then(data => {
-        if (data) {
-          setDisplayName(data.display_name); // ...and get spotify display name
-        }
-      })      .catch(() => {
+      .catch(() => {
         // Error occurred, clear the token
         setAccessToken(null);
         setDisplayName(null);
