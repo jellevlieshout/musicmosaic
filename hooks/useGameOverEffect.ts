@@ -72,7 +72,7 @@ export function useGameOverEffect(gameId: string) {
             name: player.name,
             wins: updatedWins,
             highest_score: updatedHighestScore,
-            location: player.location ?? "Unknown",
+            location: gameSettings?.location ?? "Unknown",
             user_id: user.id,
             game_id: gameId
           })

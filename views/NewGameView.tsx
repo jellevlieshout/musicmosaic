@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Song, Playlist, GameSettings } from '@/utils/types';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { getUserLocation } from '@/utils/locationApi';
 import Link from 'next/link';
 
 interface NewGameViewProps {
@@ -29,6 +30,7 @@ interface NewGameViewProps {
   isFormValid: boolean;
   isPlaylistValid: boolean;
   gameStarted: boolean;
+  locationProp: string;
 }
 
 export default function NewGameView({
@@ -42,13 +44,13 @@ export default function NewGameView({
   onSubmit,
   isFormValid,
   isPlaylistValid,
-  gameStarted
+  gameStarted,
+  locationProp
 }: NewGameViewProps) {
-  const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
   const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
-  const [badPlaylist, setBadPlaylist] = useState(false);
+  const [location, setLocation] = useState(locationProp ?? '');
 
   useEffect(() => {
     if (currGameSettings && currGameSettings.location) {
@@ -60,7 +62,13 @@ export default function NewGameView({
     if (currGameSettings && currGameSettings.gameLength) {
       setGameLength(currGameSettings.gameLength);
     }
-  }, [currGameSettings]);
+    if (locationProp && locationProp !== location) {
+      setLocation(locationProp);
+    }
+  }, [currGameSettings, locationProp]);
+  
+
+  
 
   return (
     <div className="max-w-md mx-auto p-6">

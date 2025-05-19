@@ -36,7 +36,7 @@ export default function HomeView({ isSpotifyConnected, spotifyDisplayName, onSpo
               <span>Connected to Spotify as {spotifyDisplayName}</span>
             </div>
           )}
-          {isSpotifyConnected ? (
+          {!isSpotifyConnected ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -57,20 +57,29 @@ export default function HomeView({ isSpotifyConnected, spotifyDisplayName, onSpo
               </Tooltip>
             </TooltipProvider>
           ) : (
-            // <Button asChild size="lg" variant="secondary">
-            //   <Link href="/protected/new-game">New game</Link>
-            // </Button>
             <Button asChild size="lg" variant="secondary">
               <Link href="/protected/new-game/tutorial">New game</Link>
             </Button>
             
           )}
-        <Button asChild size="lg" variant="secondary">
-          <Link href="/protected/ongoing-games">Ongoing games</Link>
-        </Button>
-        <Button asChild size="lg" variant="secondary">
-            <Link href="/protected/previous-games">Previous games</Link>
-          </Button>
+          {isSpotifyConnected ? (
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/protected/ongoing-games">Ongoing games</Link>
+            </Button>
+          ) : (
+            <Button size="lg" variant="secondary" disabled>
+              Ongoing games
+            </Button>
+          )}
+          {isSpotifyConnected ? (
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/protected/previous-games">Previous games</Link>
+            </Button>
+          ) : (
+            <Button size="lg" variant="secondary" disabled>
+              Previous games
+            </Button>
+          )}
           <Button asChild size="lg" variant="secondary">
             <Link href="/protected/leaderboard">View rankings</Link>
           </Button>

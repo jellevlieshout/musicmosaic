@@ -35,8 +35,45 @@ Our app would basically be a digital version of this game, but with some potenti
 * Vercel \- [https://vercel.com/](https://vercel.com/)
 * Shadcn Component library \- [https://ui.shadcn.com/](https://ui.shadcn.com/)
 * Zustand \- [https://zustand-demo.pmnd.rs/](https://zustand-demo.pmnd.rs/)
-    
-## What has been done so far
+
+## File structure
+```
+.
+├── app                     
+│   ├── (auth-pages)
+│   ├── auth                # pages related to authentication: logging in, signing up, reset password etc. 
+│   ├── protected           # pages only accessible to authenticated users. 
+│   └── spotify             # pages we've used to test spotify functionality. 
+├── components              # custom and from shadcn/ui
+│   ├── GameCard.tsx
+│   ├── NeonTitle.tsx
+│   ├── SineWave.tsx
+│   └── Timeline.tsx
+├── contexts                # the context/provider we use to initialize our observer
+│   └── HitsterContext.tsx
+├── hooks                   # this contains the logic which sets up connectivity to the game model, and initiates necessary observers to handle persistence.
+│   ├── useGameOverEffect.ts  
+│   └── useHisterPersistence.ts  
+├── lib
+├── stores                  # in here are shared state containers, called "stores" in Zustand lingo
+│   ├── histerModelStore.ts
+│   └── spotifyStore.ts  
+├── styles
+├── utils                   # configs and utility functions, mainly (but not only) for external APIs
+└── views                   # application views
+│   ├── GameplayView.tsx
+│   ├── GameTutorialView.tsx
+│   ├── HomeView.tsx
+│   ├── LeaderboardView.tsx
+│   ├── OngoingGamesView.tsx
+│   ├── NewGameView.tsx
+│   ├── PlayerSelectionView.tsx
+│   └── PreviousGamesView.tsx
+...
+```
+
+## Notes from mid project review
+### What has been done so far
 * Spotify API integration
   * When playing the game, a user must authenticate themselves using OAuth, after which they can access their personal playlists and songs through the Spotify Web API, and stream the songs using the Spotify Web Playback SDK, where the browser session acts as a device. Currently, we are working within a free developer environment of the Spotify API, meaning we have to whitelist users to authenticate. Please reach out to us at jellevl@kth.se such that we can whitelist you! 
 * Geolocation API integration
@@ -53,7 +90,7 @@ Our app would basically be a digital version of this game, but with some potenti
 * Round 1 user testing using [Figma prototype](https://www.figma.com/design/6l1eyXHB5kgG2A1sHp9EhZ/iprog-musicmosaic?node-id=10-21&t=NT6HPIzAVA24s9Ei-1)
 * Initial gameplay UI implementation
 
-## Next steps
+### Next steps
 * Solve issue of Spotify account whitelist
   * See `What has been done so far/Spotify integration` above
 * UI/Interaction improvements
@@ -64,33 +101,4 @@ Our app would basically be a digital version of this game, but with some potenti
   * Song name bonus
 * Player leaderboard 
 
-## File structure
-```
-.
-├── app                     
-│   ├── (auth-pages)
-│   ├── auth                # pages related to authentication: logging in, signing up, reset password etc. 
-│   ├── protected           # pages only accessible to authenticated users. 
-│   └── spotify             # pages we've used to test spotify functionality. 
-├── components              # custom and from shadcn/ui
-│   ├── GameCard.tsx
-│   ├── NeonTitle.tsx
-│   └── Timeline.tsx
-|   ... 
-├── hooks                   # this contains the logic which sets up connectivity to the game model, and initiates necessary observers to handle persistence.
-│   └── useHisterPersistence.ts  
-├── lib
-├── stores                  # in here are shared state containers, called "stores" in Zustand lingo
-│   ├── histerModelStore.ts
-│   └── spotifyStore.ts  
-├── styles
-├── utils                   # configs and utility functions, mainly (but not only) for external APIs
-└── views                   # application views
-│   ├── GameplayView.tsx
-│   ├── HomeView.tsx
-│   ├── LeaderboardView.tsx
-│   ├── NewGameView.tsx
-│   ├── PlayerSelectionView.tsx
-│   └── SettingsView.tsx                
-...
-```
+
