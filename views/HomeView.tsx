@@ -7,10 +7,11 @@ import { Music } from "lucide-react";
 
 interface HomeViewProps {
   isSpotifyConnected: boolean;
+  spotifyDisplayName: string | null;
   onSpotifyConnect: () => void;
 }
 
-export default function HomeView({ isSpotifyConnected, onSpotifyConnect }: HomeViewProps) {
+export default function HomeView({ isSpotifyConnected, spotifyDisplayName, onSpotifyConnect }: HomeViewProps) {
   return (
     <>
       <div className="items-center flex flex-col gap-5 py-8">
@@ -32,7 +33,7 @@ export default function HomeView({ isSpotifyConnected, onSpotifyConnect }: HomeV
           ) : (
             <div className="flex items-center gap-2 text-green-500 mb-2">
               <Music className="w-5 h-5" />
-              <span>Connected to Spotify</span>
+              <span>Connected to Spotify as {spotifyDisplayName}</span>
             </div>
           )}
           {!isSpotifyConnected ? (
