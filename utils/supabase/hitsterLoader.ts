@@ -59,7 +59,7 @@ export async function loadGameState(gameId: string | null): Promise<string> {
   }
     
     // Update the Zustand store with the loaded state
-    const { setPlaylist, seatPlayersInRandomOrder, setGameSettings } = useGameplayStore.getState();
+    const { setPlaylist, seatPlayersInRandomOrder, setGameSettings, setGameHasStarted } = useGameplayStore.getState();
     
     // Set the playlist if it exists
     if (data.current_playlist) {
@@ -79,6 +79,11 @@ export async function loadGameState(gameId: string | null): Promise<string> {
     // Set the game settings if they exist
     if (data.game_settings) {
       setGameSettings(data.game_settings);
+    }
+
+    // Set the game has started if it exists
+    if (data.game_started) {
+      setGameHasStarted(data.game_started);
     }
     
     return data.id;

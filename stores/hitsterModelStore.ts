@@ -10,7 +10,7 @@ export type GameplayState = {
     isAudioPlayerRunning: boolean
     gameSettings: GameSettings | null
     isPaused: boolean
-
+    gameHasStarted: boolean
     setPlaylist: (playlist: Song[]) => void
     setCurrentSongId: (songId: string | null) => void,
     seatPlayersInRandomOrder: (players: Player[]) => void
@@ -27,6 +27,7 @@ export type GameplayState = {
     pauseGame: () => void
     resumeGame: () => void
     restartGame: () => void
+    setGameHasStarted: (hasStarted: boolean) => void
     // revealSongDetails: () => void
     // playerWasRight: () => void
     // playerWasWrong: () => void
@@ -40,6 +41,7 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
     isAudioPlayerRunning: false,
     gameSettings: null,
     isPaused: false,
+    gameHasStarted: false,
 
     resetModel: () => {
         set({
@@ -48,12 +50,17 @@ export const useGameplayStore = create<GameplayState>((set:any, get:any) => ({
             currentPlaylist: null,
             currentSongId: null,
             isAudioPlayerRunning: false,
-            gameSettings: null
+            gameSettings: null,
+            gameHasStarted: false
         })
     },
 
     setGameSettings: (settings) => {
         set({ gameSettings: settings })
+    },
+
+    setGameHasStarted: (hasStarted: boolean) => {
+        set({ gameHasStarted: hasStarted })
     },
 
     setPlaylist: (playlist: Song[]) => {
