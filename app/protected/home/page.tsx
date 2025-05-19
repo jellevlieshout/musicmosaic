@@ -4,6 +4,7 @@ import HomeView from "@/views/HomeView";
 import { useSpotifyStore } from "@/stores/spotifyStore";
 import { getSpotifyAuthUrl } from "@/utils/spotify";
 import { useEffect } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function HomePresenter() {
   const accessToken = useSpotifyStore((state) => state.accessToken);
@@ -37,6 +38,42 @@ export default function HomePresenter() {
           setAccessToken(null);
           setDisplayName(null);
           return; // Exit early if the response is not okay...
+        } else {
+          // Test if token has playback scopes
+          fetch('https://api.spotify.com/v1/me/player/devices', {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          })
+          .then(devicesResponse => {
+            console.log(devicesResponse);
+            if (!devicesResponse.ok) {
+              console.log('Token does not have playback scopes');
+              toast.error('Unfortunately, this app requires a Spotify Premium account to work. Please upgrade your account to continue.', {
+                duration: 5000,
+                position: 'top-center',
+                style: {
+                  background: '#333',
+                  color: '#fff',
+                  padding: '16px',
+                  borderRadius: '8px',
+                },
+              });
+              setAccessToken(null);
+            } else {
+              console.log('Token has playback scopes and can use Web Playback SDK');
+              toast.success('You are connected to Spotify. Use the "New Game" button to start playing.', {
+                duration: 4000,
+                position: 'top-center',
+                style: {
+                  background: '#1DB954',
+                  color: '#fff',
+                  padding: '16px',
+                  borderRadius: '8px',
+                },
+              });
+            }
+          });
         }
         return response.json(); // ...but if OK, parse the JSON payload...
       })
@@ -57,10 +94,13 @@ export default function HomePresenter() {
   };
 
   return (
-    <HomeView 
-      isSpotifyConnected={isSpotifyConnected}
-      onSpotifyConnect={handleSpotifyConnect}
-      spotifyDisplayName={displayName}
-    />
+    <>
+      <Toaster />
+      <HomeView 
+        isSpotifyConnected={isSpotifyConnected}
+        onSpotifyConnect={handleSpotifyConnect}
+        spotifyDisplayName={displayName}
+      />
+    </>
   );
 }
