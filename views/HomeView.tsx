@@ -12,7 +12,6 @@ interface HomeViewProps {
 }
 
 export default function HomeView({ isSpotifyConnected, spotifyDisplayName, onSpotifyConnect }: HomeViewProps) {
-  console.log(isSpotifyConnected);
   return (
     <>
       <div className="items-center flex flex-col gap-5 py-8">
