@@ -14,6 +14,14 @@ interface Playlist {
 }
 
 export default function NewGamePresenter() {
+  return (
+    <Suspense fallback={<div>Loading....</div>}>
+      <NewGameSettingsContent />
+    </Suspense>
+  );
+}
+
+function NewGameSettingsContent() {
   const router = useRouter();
   const [location, setLocation] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
@@ -185,17 +193,15 @@ export default function NewGamePresenter() {
   };
 
   return (
-    <Suspense fallback={<div>Loading....</div>}>
-      <NewGameView
-        playlists={playlists}
-        onLocationChange={handleLocationChange}
-        onPlaylistSelect={handlePlaylistSelect}
-        onAllowStealsChange={handleAllowStealsChange}
-        onSongNameBonusChange={handleSongNameBonusChange}
-        onGameLengthChange={handleGameLengthChange}
-        onSubmit={handleSubmit}
-        isFormValid={isFormValid}
-      />
-    </Suspense>
+    <NewGameView
+      playlists={playlists}
+      onLocationChange={handleLocationChange}
+      onPlaylistSelect={handlePlaylistSelect}
+      onAllowStealsChange={handleAllowStealsChange}
+      onSongNameBonusChange={handleSongNameBonusChange}
+      onGameLengthChange={handleGameLengthChange}
+      onSubmit={handleSubmit}
+      isFormValid={isFormValid}
+    />
   );
 }
