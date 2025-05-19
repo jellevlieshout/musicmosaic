@@ -12,12 +12,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Song, Playlist } from '@/utils/types';
+import { Song, Playlist, GameSettings } from '@/utils/types';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import Link from 'next/link';
 
 interface NewGameViewProps {
+  gameId: string | null,
   playlists: Playlist[];
+  currGameSettings?: GameSettings | null;
   onLocationChange: (location: string) => void;
   onPlaylistSelect: (playlistId: string) => void;
   onAllowStealsChange: (allowSteals: boolean) => void;
@@ -28,7 +31,9 @@ interface NewGameViewProps {
 }
 
 export default function NewGameView({
+  gameId,
   playlists,
+  currGameSettings,
   onLocationChange,
   onPlaylistSelect,
   onAllowStealsChange,
@@ -37,14 +42,12 @@ export default function NewGameView({
   onSubmit,
   isFormValid
 }: NewGameViewProps) {
-  const [location, setLocation] = useState('');
+  console.log(currGameSettings)
+  const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
-  const [allowSteals, setAllowSteals] = useState(false);
-  const [songNameBonus, setSongNameBonus] = useState(false);
-  const [gameLength, setGameLength] = useState('');
-
-  // Game length options
-  const gameLengthOptions = Array.from({ length: 16 }, (_, i) => i + 5);
+  const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
+  const [songNameBonus, setSongNameBonus] = useState(currGameSettings?.songNameBonus ?? false);
+  const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
 
   return (
     <div className="max-w-md mx-auto p-6">
@@ -166,13 +169,15 @@ export default function NewGameView({
           </Select>
         </div>
         <div className='flex flex-row justify-between'>
-            <Button
-                variant="outline"
-                onClick={() => window.history.back()}
-                className="neon-glow-box-shadow"
-            >
-            ← Back
-            </Button>
+            <Link href={`/protected/new-game/players?gameId=${gameId}`}>
+                <Button
+                    variant="outline"
+                    className="neon-glow-box-shadow"
+                >
+                ← Back
+                </Button>
+            </Link>
+
             <Button
                 onClick={onSubmit}
                 disabled={!isFormValid}
