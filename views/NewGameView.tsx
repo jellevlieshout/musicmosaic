@@ -21,7 +21,6 @@ interface NewGameViewProps {
   onLocationChange: (location: string) => void;
   onPlaylistSelect: (playlistId: string) => void;
   onAllowStealsChange: (allowSteals: boolean) => void;
-  onSongNameBonusChange: (songNameBonus: boolean) => void;
   onGameLengthChange: (gameLength: string) => void;
   onSubmit: () => void;
   isFormValid: boolean;
@@ -33,7 +32,6 @@ export default function NewGameView({
   onLocationChange,
   onPlaylistSelect,
   onAllowStealsChange,
-  onSongNameBonusChange,
   onGameLengthChange,
   onSubmit,
   isFormValid,
@@ -42,7 +40,6 @@ export default function NewGameView({
   const [location, setLocation] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [allowSteals, setAllowSteals] = useState(false);
-  const [songNameBonus, setSongNameBonus] = useState(false);
   const [gameLength, setGameLength] = useState('');
 
   // Game length options
@@ -112,32 +109,6 @@ export default function NewGameView({
             onCheckedChange={(checked) => {
               setAllowSteals(checked);
               onAllowStealsChange(checked);
-            }}
-            disabled={gameStarted}
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex flex-row gap-2 items-center">
-            <Label className="neon-tubes-styling">Song name bonus?</Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info size={16} color="#3b3b3b"></Info>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-sm">
-                    If activated, players can earn extra points for correctly guessing the name of the selected track
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <Switch
-            checked={songNameBonus}
-            onCheckedChange={(checked) => {
-              setSongNameBonus(checked);
-              onSongNameBonusChange(checked);
             }}
             disabled={gameStarted}
           />
