@@ -15,6 +15,8 @@ import { Switch } from "@/components/ui/switch";
 import { Song, Playlist } from '@/utils/types';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { useEffect } from 'react';
+import { getUserLocation } from '@/utils/locationApi';
 
 interface NewGameViewProps {
   playlists: Playlist[];
@@ -45,6 +47,22 @@ export default function NewGameView({
 
   // Game length options
   const gameLengthOptions = Array.from({ length: 16 }, (_, i) => i + 5);
+
+  useEffect(() => {
+    async function fetchLocation() {
+      try {
+        const loc = await getUserLocation();
+        const locationString = `${loc.city}, ${loc.country}`;
+        setLocation(locationString);
+        onLocationChange(locationString);
+      } catch (error) {
+        console.error("Failed to fetch location:", error);
+      }
+    }
+  
+    fetchLocation();
+  }, []);
+  
 
   return (
     <div className="max-w-md mx-auto p-6">
