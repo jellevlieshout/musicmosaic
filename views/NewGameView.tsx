@@ -15,7 +15,6 @@ import { Switch } from "@/components/ui/switch";
 import { Song, Playlist, GameSettings } from '@/utils/types';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect } from 'react';
 import { getUserLocation } from '@/utils/locationApi';
 import Link from 'next/link';
 
