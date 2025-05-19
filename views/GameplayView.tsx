@@ -180,18 +180,32 @@ export default function GameplayView({
   return (
     <>
       <div className="grid grid-cols-5 gap-4 w-screen">
-        <div className="col-span-1 p-4 border-r">
-          {currentPlayers?.map((player: Player) => (
-            <div key={player.id} className="flex flex-row justify-between"  style={{ fontWeight: player.id === currentPlayerId ? 'bold' : 'normal' }}>
-                <div>
-                    {player.name}
-                </div>
-                <div>
-                    {player.deck.length - 1}
-                </div>
-            </div>
-          ))}
-        </div>
+        {/* SIDOPANELEN */}
+      <div className="col-span-1 p-4 border-r overflow-y-auto space-y-4">
+        {currentPlayers?.map((player) => (
+          <div key={player.id}>
+            <p
+            className="flex justify-between font-semibold mb-1"
+            style={{ fontWeight: player.id === currentPlayerId ? "bold" : "normal" }}
+              >
+              <span>{player.name}</span>
+              <span>{player.deck.length - 1}</span>
+            </p>
+      {/* tiny timeline */}
+      <div className="flex flex-wrap gap-1 mb-2">
+        {player.deck.map(song => (
+          <GameCard                /* GameCard är redan importerat högst upp */
+            key={song.id}
+            song={song}
+            isRevealed             // visa årtal direkt
+            small                  // ← gör kortet litet
+          />
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
+
         <div className="col-span-4 p-6">
           <div className="flex flex-col items-center gap-4">
             <p className="neon-tubes-styling text-8xl">{currentPlayers?.find((p) => currentPlayerId === p.id)?.name}'s turn</p>
