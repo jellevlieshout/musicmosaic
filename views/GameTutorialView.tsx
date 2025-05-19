@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 
 interface GameTutorialViewProps {
     gameId: string | null,
@@ -10,10 +11,20 @@ interface GameTutorialViewProps {
 export default function GameTutorialView({
     gameId,
   }: GameTutorialViewProps) {
+  const router = useRouter();
 
   return (
     <div className="max-w-4xl p-6">
-      <h1 className="neon-tubes-styling text-5xl mb-8 text-center">Game rules</h1>
+      <div className="flex flex-col gap-4 mb-8">
+        <Button 
+          variant="ghost" 
+          onClick={() => router.push("/")} 
+          className="text-sm self-start"
+        >
+          ← Back
+        </Button>
+        <h1 className="neon-tubes-styling text-5xl text-center">Game rules</h1>
+      </div>
       
       <div className="space-y-6 text-center">
         <div>
@@ -49,8 +60,7 @@ export default function GameTutorialView({
                 </p>
                 <br/>
                 <p>
-                    Once locked in, the card is revealed. If the guess was correct, you get the card added to your timeline. If another
-                    player successfully stole it, it is added to their timeline.
+                    Once locked in, the card is revealed. If the guess was correct, you get the card added to your timeline.
                 </p>
                 <br/>
                 <p>
