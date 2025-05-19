@@ -9,7 +9,7 @@ export default function GameTutorialPresenter() {
   const searchParams = useSearchParams();
   const gameIdParam = searchParams.get('gameId');
   const { gameId } = useHitsterPersistence(gameIdParam);
-
+  
   return (
     <GameTutorialView gameId={gameId}/>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,12 +42,26 @@ export default function NewGameView({
   onSubmit,
   isFormValid
 }: NewGameViewProps) {
-  console.log(currGameSettings)
   const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
   const [songNameBonus, setSongNameBonus] = useState(currGameSettings?.songNameBonus ?? false);
   const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
+
+  useEffect(() => {
+    if (currGameSettings && currGameSettings.location) {
+      setLocation(currGameSettings.location);
+    }
+    if (currGameSettings && currGameSettings.allowSteals) {
+      setAllowSteals(currGameSettings.allowSteals);
+    }
+    if (currGameSettings && currGameSettings.songNameBonus) {
+      setSongNameBonus(currGameSettings.songNameBonus);
+    }
+    if (currGameSettings && currGameSettings.gameLength) {
+      setGameLength(currGameSettings.gameLength);
+    }
+  }, [currGameSettings]);
 
   return (
     <div className="max-w-md mx-auto p-6">
@@ -183,7 +197,7 @@ export default function NewGameView({
                 disabled={!isFormValid}
                 className={`${isFormValid ? 'text-black' : 'opacity-50'}`}
             >
-                Next →
+                Start →
             </Button>
         </div>
         
