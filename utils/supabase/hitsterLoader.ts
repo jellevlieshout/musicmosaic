@@ -29,21 +29,6 @@ export async function loadGameState(gameId: string | null): Promise<string> {
     if (!existing) throw new Error("Game not found");
     data = existing;
   } else {
-    /* New‑game – återanvänd rad om den inte är avslutad */
-    const { data: unfinished, error } = await supabase
-      .from("gameplay_states")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("game_finished", false)
-      .order("updated_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (error) throw error;
-
-    if (unfinished) {
-      data = unfinished;
-    } else {
       const { data: newGame, error: insertErr } = await supabase
         .from("gameplay_states")
         .insert({ game_finished: false })
@@ -55,11 +40,11 @@ export async function loadGameState(gameId: string | null): Promise<string> {
 
       useGameplayStore.getState().resetModel();
       data = newGame;
-    }
   }
+  
     
     // Update the Zustand store with the loaded state
-    const { setPlaylist, seatPlayersInRandomOrder, setGameSettings } = useGameplayStore.getState();
+    const { setPlaylist, seatPlayersInRandomOrder, setGameSettings, setGameHasStarted } = useGameplayStore.getState();
     
     // Set the playlist if it exists
     if (data.current_playlist) {
@@ -79,6 +64,11 @@ export async function loadGameState(gameId: string | null): Promise<string> {
     // Set the game settings if they exist
     if (data.game_settings) {
       setGameSettings(data.game_settings);
+    }
+
+    // Set the game has started if it exists
+    if (data.game_started) {
+      setGameHasStarted(data.game_started);
     }
     
     return data.id;

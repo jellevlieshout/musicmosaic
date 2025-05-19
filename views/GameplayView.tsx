@@ -1,5 +1,6 @@
 import GameCard from "@/components/GameCard";
 import Timeline from "@/components/Timeline";
+import AudioWave from "@/components/SineWave";
 import { Button } from "@/components/ui/button";
 import { GameSettings, Player, Song } from "@/utils/types";
 import { Pause } from "lucide-react";
@@ -87,6 +88,12 @@ export default function GameplayView({
   }
   const currentSongYear = getSongYearById(currentSongId)
 
+  const getSongArtistById = (songId: string | null) => {
+    if (!songId) return null;
+    const song = currentPlaylist?.find((song: Song) => song.id === songId);
+    return song ? song.artist : null; // Return the song title or null if not found
+  }
+  const currentSongArtist = getSongArtistById(currentSongId)
   function cardPick(evt: React.MouseEvent<any>) {
     onCardSelect()
     setGameMessage('')
@@ -107,7 +114,7 @@ export default function GameplayView({
         setGameMessage('Correct!')
     } else {
         onIncorrectPlacement()
-        setGameMessage(`Incorrect! The song was: ${currentSongTitle} (${currentSongYear})`)
+        setGameMessage(`Incorrect! The song was: ${currentSongTitle} by ${currentSongArtist} (${currentSongYear})`)
     }
     setRoundOver(true)
   }
@@ -192,20 +199,27 @@ export default function GameplayView({
             {!currentSongId && !roundOver && <div onClick={cardPick}>
               <GameCard />
             </div>}
-            {isAudioPlayerRunning && (
-                <Button size="sm" variant={"secondary"} onClick={stopClick}>
-                    <p className="neon-tubes-styling">stop music</p>
-                </Button>
-            )}
-            {isAudioPlayerRunning && currentSongId && currentSongTitle && (
-                <div>
-                    We are playing the song with ID {currentSongId}, song {currentSongTitle}
+            {currentSongId && currentSongTitle && (
+                <div className="flex flex-col items-center gap-4">
+                    <div className="flex items-center justify-center gap-4">
+                        <AudioWave color="#ff00ff" amplitude={12} frequency={0.04} speed={0.06} isPlaying={isAudioPlayerRunning} />
+                        <div className={isAudioPlayerRunning ? "animate-pulse" : ""}>
+                            <GameCard song={currentPlaylist?.find((song) => currentSongId === song.id)} />
+                        </div>
+                        <AudioWave color="#ff00ff" amplitude={12} frequency={0.04} speed={0.06} mirror isPlaying={isAudioPlayerRunning} />
+                    </div>
+                    <div>
+                        {isAudioPlayerRunning ? (
+                            <Button size="sm" variant={"secondary"} onClick={stopClick}>
+                                <p className="neon-tubes-styling">stop music</p>
+                            </Button>
+                        ) : (
+                            <Button size="sm" variant={"secondary"} onClick={playClick}>
+                                <p className="neon-tubes-styling">play again</p>
+                            </Button>
+                        )}
+                    </div>
                 </div>
-            )}
-            {!isAudioPlayerRunning && currentSongId && (
-                <Button size="sm" variant={"secondary"} onClick={playClick}>
-                <p className="neon-tubes-styling">play again</p>
-                </Button>
             )}
             {!currentSongId && roundOver && (
               <Button variant={"secondary"} onClick={nextPlayer}>

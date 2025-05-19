@@ -1,6 +1,10 @@
 import { Song } from "@/utils/types"
 import { Button } from "./ui/button"
 
+const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+}
+
 interface GameCardProps {
     isRevealed?: boolean,
     isPlaced?: boolean,
@@ -33,7 +37,7 @@ export default function GameCard({
             className="neon-glow-box-shadow_default flex flex-col items-center justify-center gap-1" 
             style={{ height: '150px', width: '150px', borderRadius: '5px', backgroundColor: '#101013'}}>
             <div className="neon-tubes-styling text-5xl text-center">{song.year}</div>
-            <div className="text-l text-center">{song.title}</div>
+            <div className="text-l text-center">{truncateText(song.title, 15)}</div>
             <div className="text-l text-center">{song.artist}</div>
         </div>
     )
