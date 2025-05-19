@@ -24,6 +24,15 @@ export default function PlayerSelectionView({
   const [players, setPlayers] = useState<string[]>(currentPlayers && currentPlayers?.length > 0 ? currentPlayers : ["", "", ""]);  // Default 3 players
 
   useEffect(() => {
+<<<<<<< HEAD
+=======
+    if (currentPlayers && currentPlayers.length > 0) {
+      setPlayers(currentPlayers);
+    }
+  }, [currentPlayers]);
+
+  useEffect(() => {
+>>>>>>> 17706753f32db53bfe4065993318ae56913eb6f8
     console.log("rendering for ", players)
     onValidate(players);
   }, [players, onValidate]);
