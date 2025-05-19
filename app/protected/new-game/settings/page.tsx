@@ -49,11 +49,11 @@ function NewGameSettingsContent() {
 
   useEffect(() => {
     validatePlaylist();
-  }, [selectedPlaylist, gameLength]);
+  }, [selectedPlaylist, gameLength, playlists]);
 
   useEffect(() => {
     validateForm();
-  }, [location, selectedPlaylist, gameLength]);
+  }, [location, selectedPlaylist, gameLength, isPlaylistValid]);
 
   useEffect(() => {
     function fetchLocation() {
