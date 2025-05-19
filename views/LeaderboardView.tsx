@@ -1,4 +1,6 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 interface LeaderboardViewProps {
   userLocation: string;
@@ -21,6 +23,7 @@ export default function LeaderboardView({
   nearYouList,
   allTimeList,
 }: LeaderboardViewProps) {
+  const router = useRouter();
 
   const renderRow = (item: any, index: number) => (
     <tr key={index}>
@@ -33,7 +36,16 @@ export default function LeaderboardView({
 
   return (
     <div className="parentContainerLeaderboard">
-      <h1 className="neon-tubes-styling text-5xl text-center">Leaderboard</h1>
+      <div className="flex flex-col gap-4 mb-8">
+        <Button 
+          variant="ghost" 
+          onClick={() => router.push("/")} 
+          className="text-sm self-start"
+        >
+          ← Back
+        </Button>
+        <h1 className="neon-tubes-styling text-5xl text-center">Leaderboard</h1>
+      </div>
       <h2 className="neon-tubes-styling text-3xl mt-5 text-center">
         Near you ({userLocation})
       </h2>

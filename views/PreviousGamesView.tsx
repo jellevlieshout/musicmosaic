@@ -3,12 +3,16 @@
 import { FinishedGame } from "@/app/protected/previous-games/page";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
 interface Props {
   games: FinishedGame[];
   loading: boolean;
 }
 
 export default function PreviousGamesView({ games, loading }: Props) {
+  const router = useRouter();
+
   if (loading) return <div className="p-6">Loading…</div>;
 
   function prettyWinner(raw: any) {
@@ -28,7 +32,16 @@ export default function PreviousGamesView({ games, loading }: Props) {
 
   return (
     <div className="max-w-lg mx-auto p-6 flex flex-col gap-4">
-      <h1 className="neon-tubes-styling text-4xl mb-4 text-center">Previous games</h1>
+      <div className="flex flex-col gap-4 mb-8">
+        <Button 
+          variant="ghost" 
+          onClick={() => router.push("/")} 
+          className="text-sm self-start"
+        >
+          ← Back
+        </Button>
+        <h1 className="neon-tubes-styling text-4xl text-center">Previous games</h1>
+      </div>
 
       {games.length === 0 && <p>No finished games yet.</p>}
 
