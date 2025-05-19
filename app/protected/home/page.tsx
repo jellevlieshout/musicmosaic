@@ -8,6 +8,8 @@ import { useEffect } from "react";
 export default function HomePresenter() {
   const accessToken = useSpotifyStore((state) => state.accessToken);
   const setAccessToken = useSpotifyStore((state) => state.setAccessToken);
+  const displayName = useSpotifyStore((state) => state.displayName);
+  const setDisplayName = useSpotifyStore((state) => state.setDisplayName);
   const isSpotifyConnected = !!accessToken;
 
   useEffect(() => {
@@ -33,11 +35,19 @@ export default function HomePresenter() {
         if (!response.ok) {
           // Token is invalid, clear it
           setAccessToken(null);
+          setDisplayName(null);
+          return; // Exit early if the response is not okay...
         }
+        return response.json(); // ...but if OK, parse the JSON payload...
       })
-      .catch(() => {
+      .then(data => {
+        if (data) {
+          setDisplayName(data.display_name); // ...and get spotify display name
+        }
+      })      .catch(() => {
         // Error occurred, clear the token
         setAccessToken(null);
+        setDisplayName(null);
       });
     }
   }, [setAccessToken, accessToken]);
@@ -50,6 +60,7 @@ export default function HomePresenter() {
     <HomeView 
       isSpotifyConnected={isSpotifyConnected}
       onSpotifyConnect={handleSpotifyConnect}
+      spotifyDisplayName={displayName}
     />
   );
 }
