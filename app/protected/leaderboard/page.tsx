@@ -13,10 +13,10 @@ export default function LeaderboardPresenter() {
 
   useEffect(() => {
     function fetchLocation() {
-        fetch('http://ip-api.com/json/?fields=status,message,query,city,regionName,country,countryCode,lat,lon,timezone')
+        fetch(`https://api.ipgeolocation.io/v2/ipgeo?apiKey=${process.env.NEXT_PUBLIC_LOCATION_API_KEY}`)
         .then(response => response.json())
         .then(data => {
-          setLocation(data.city + ", " + data.country);
+          setLocation(data.location?.city + ", " + data.location?.country_name);
         })
         .catch(error => {
           console.error("Failed to fetch location:", error);
