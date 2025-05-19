@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,41 +12,54 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Song, Playlist } from '@/utils/types';
+import { Song, Playlist, GameSettings } from '@/utils/types';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useEffect } from 'react';
 import { getUserLocation } from '@/utils/locationApi';
+import Link from 'next/link';
 
 interface NewGameViewProps {
+  gameId: string | null,
   playlists: Playlist[];
+  currGameSettings?: GameSettings | null;
   onLocationChange: (location: string) => void;
   onPlaylistSelect: (playlistId: string) => void;
   onAllowStealsChange: (allowSteals: boolean) => void;
-  onSongNameBonusChange: (songNameBonus: boolean) => void;
   onGameLengthChange: (gameLength: string) => void;
   onSubmit: () => void;
   isFormValid: boolean;
+  gameStarted: boolean;
 }
 
 export default function NewGameView({
+  gameId,
   playlists,
+  currGameSettings,
   onLocationChange,
   onPlaylistSelect,
   onAllowStealsChange,
-  onSongNameBonusChange,
   onGameLengthChange,
   onSubmit,
-  isFormValid
+  isFormValid,
+  gameStarted
 }: NewGameViewProps) {
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
-  const [allowSteals, setAllowSteals] = useState(false);
-  const [songNameBonus, setSongNameBonus] = useState(false);
-  const [gameLength, setGameLength] = useState('');
+  const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
+  const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
 
-  // Game length options
-  const gameLengthOptions = Array.from({ length: 16 }, (_, i) => i + 5);
+  useEffect(() => {
+    if (currGameSettings && currGameSettings.location) {
+      setLocation(currGameSettings.location);
+    }
+    if (currGameSettings && currGameSettings.allowSteals) {
+      setAllowSteals(currGameSettings.allowSteals);
+    }
+    if (currGameSettings && currGameSettings.gameLength) {
+      setGameLength(currGameSettings.gameLength);
+    }
+  }, [currGameSettings]);
 
   useEffect(() => {
     async function fetchLocation() {
@@ -80,6 +93,7 @@ export default function NewGameView({
               onLocationChange(e.target.value);
             }}
             className="neon-glow-box-shadow"
+            disabled={gameStarted}
           />
         </div>
 
@@ -91,6 +105,7 @@ export default function NewGameView({
               setSelectedPlaylist(value);
               onPlaylistSelect(value);
             }}
+            disabled={gameStarted}
           >
             <SelectTrigger className="neon-glow-box-shadow">
               <SelectValue placeholder="Choose a playlist" />
@@ -127,31 +142,7 @@ export default function NewGameView({
               setAllowSteals(checked);
               onAllowStealsChange(checked);
             }}
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex flex-row gap-2 items-center">
-            <Label className="neon-tubes-styling">Song name bonus?</Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info size={16} color="#3b3b3b"></Info>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-sm">
-                    If activated, players can earn extra points for correctly guessing the name of the selected track
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <Switch
-            checked={songNameBonus}
-            onCheckedChange={(checked) => {
-              setSongNameBonus(checked);
-              onSongNameBonusChange(checked);
-            }}
+            disabled={gameStarted}
           />
         </div>
 
@@ -163,6 +154,7 @@ export default function NewGameView({
               setGameLength(value);
               onGameLengthChange(value);
             }}
+            disabled={gameStarted}
           >
             <SelectTrigger className="neon-glow-box-shadow">
               <SelectValue placeholder="Songs per player" />
@@ -184,20 +176,27 @@ export default function NewGameView({
           </Select>
         </div>
         <div className='flex flex-row justify-between'>
-            <Button
-                variant="outline"
-                onClick={() => window.history.back()}
-                className="neon-glow-box-shadow"
-            >
-            ← Back
-            </Button>
-            <Button
+            <Link href={`/protected/new-game/players?gameId=${gameId}`}>
+                <Button
+                    variant="outline"
+                    className="neon-glow-box-shadow"
+                >
+                ← Back
+                </Button>
+            </Link>
+
+            {!gameStarted && <Button
                 onClick={onSubmit}
                 disabled={!isFormValid}
                 className={`${isFormValid ? 'text-black' : 'opacity-50'}`}
             >
-                Next →
-            </Button>
+                Start →
+            </Button>}
+            {gameStarted && <Link href={`/protected/gameplay/${gameId}`}>
+              <Button>
+                  Resume →
+              </Button>
+            </Link>}
         </div>
         
       </div>

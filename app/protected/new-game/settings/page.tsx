@@ -6,6 +6,7 @@ import NewGameView from "@/views/NewGameView";
 import { useGameplayStore } from '@/stores/hitsterModelStore';
 import { useSpotifyStore } from '@/stores/spotifyStore';
 import { Song } from '@/utils/types';
+import { useHitsterPersistence } from '@/hooks/useHitsterPersistence';
 
 interface Playlist {
   id: string;
@@ -26,22 +27,22 @@ function NewGameSettingsContent() {
   const [location, setLocation] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [allowSteals, setAllowSteals] = useState(false);
-  const [songNameBonus, setSongNameBonus] = useState(false);
   const [gameLength, setGameLength] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(true);
 
   const searchParams = useSearchParams();
-  const gameId = searchParams.get('gameId');
+  const gameIdParam = searchParams.get('gameId');
+  const { gameId } = useHitsterPersistence(gameIdParam);
 
   const accessToken = useSpotifyStore((state) => state.accessToken);
-  const { setPlaylist, setGameSettings, initializaPlayerDecks } = useGameplayStore();
+  const { setPlaylist, setGameSettings, initializaPlayerDecks, setGameHasStarted, gameHasStarted, gameSettings } = useGameplayStore();
 
   useEffect(() => {
     if (accessToken) {
       console.log('accessToken', accessToken);
-      console.log('gameId', gameId);
+      console.log('gameId', gameIdParam);
       fetchUserPlaylists();
     }
   }, [accessToken]);
@@ -164,10 +165,6 @@ function NewGameSettingsContent() {
     setAllowSteals(newValue);
   };
 
-  const handleSongNameBonusChange = (newValue: boolean) => {
-    setSongNameBonus(newValue);
-  };
-
   const handleGameLengthChange = (newLength: string) => {
     setGameLength(newLength);
   };
@@ -181,11 +178,10 @@ function NewGameSettingsContent() {
     setGameSettings({
       location,
       allowSteals,
-      songNameBonus,
       gameLength
     });
     setPlaylist(selectedPlaylistData.songs);
-
+    setGameHasStarted(true);
     initializaPlayerDecks()
 
     // Navigate to gameplay
@@ -195,13 +191,15 @@ function NewGameSettingsContent() {
   return (
     <NewGameView
       playlists={playlists}
+      gameId={gameId}
+      currGameSettings={gameSettings}
       onLocationChange={handleLocationChange}
       onPlaylistSelect={handlePlaylistSelect}
       onAllowStealsChange={handleAllowStealsChange}
-      onSongNameBonusChange={handleSongNameBonusChange}
       onGameLengthChange={handleGameLengthChange}
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
+      gameStarted={gameHasStarted}
     />
   );
 }
