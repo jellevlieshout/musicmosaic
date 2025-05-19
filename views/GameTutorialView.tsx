@@ -32,7 +32,7 @@ export default function GameTutorialView({
                 <br/>
                 <p>
                     Then decide game settings like duration, location, and playlist. You can either use a playlist from 
-                    your personal music library or a provided setlist. You can also decide if you want to play in steal mode.
+                    your personal music library or a provided setlist.
                 </p>
                 <br/>
                 <p>
@@ -46,12 +46,6 @@ export default function GameTutorialView({
             <div>
                 <p>
                     Pick a card and listen to the track.
-                </p>
-                <br/>
-                <p>
-                    Select where in your timeline you think the song belongs. 
-                    In steal mode, other players then have the option to place one of their steal tokens where they think the song 
-                    actually belongs.
                 </p>
                 <br/>
                 <p>

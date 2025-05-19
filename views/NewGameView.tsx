@@ -24,7 +24,6 @@ interface NewGameViewProps {
   currGameSettings?: GameSettings | null;
   onLocationChange: (location: string) => void;
   onPlaylistSelect: (playlistId: string) => void;
-  onAllowStealsChange: (allowSteals: boolean) => void;
   onGameLengthChange: (gameLength: string) => void;
   onSubmit: () => void;
   isFormValid: boolean;
@@ -39,7 +38,6 @@ export default function NewGameView({
   currGameSettings,
   onLocationChange,
   onPlaylistSelect,
-  onAllowStealsChange,
   onGameLengthChange,
   onSubmit,
   isFormValid,
@@ -48,16 +46,12 @@ export default function NewGameView({
   locationProp
 }: NewGameViewProps) {
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
-  const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
   const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
   const [location, setLocation] = useState(locationProp ?? '');
 
   useEffect(() => {
     if (currGameSettings && currGameSettings.location) {
       setLocation(currGameSettings.location);
-    }
-    if (currGameSettings && currGameSettings.allowSteals) {
-      setAllowSteals(currGameSettings.allowSteals);
     }
     if (currGameSettings && currGameSettings.gameLength) {
       setGameLength(currGameSettings.gameLength);
@@ -111,32 +105,6 @@ export default function NewGameView({
               ))}
             </SelectContent>
           </Select>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex flex-row gap-2 items-center">
-            <Label className="neon-tubes-styling">Allow steals?</Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info size={16} color="#3b3b3b"></Info>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-sm">
-                    In steal mode, each player is given additional steal tokens they can use to steal a misplaced card
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <Switch
-            checked={allowSteals}
-            onCheckedChange={(checked) => {
-              setAllowSteals(checked);
-              onAllowStealsChange(checked);
-            }}
-            disabled={gameStarted}
-          />
         </div>
 
         <div className="space-y-2">
