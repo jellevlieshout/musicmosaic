@@ -14,6 +14,7 @@ import {
     DialogTitle,
     DialogFooter,
   } from "@/components/ui/dialog";
+  import { ChevronDown } from "lucide-react";
 
 interface GameplayProps {
   currentPlayers: Player[] | null,
@@ -73,6 +74,15 @@ export default function GameplayView({
         setWinner(currentPlayers?.find((play: Player) => (play.deck.length - 1) >= +gameSettings.gameLength));
     }
   }, [currentSongId])
+
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) =>
+    setExpanded(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+  });
 
   const getSongTitleById = (songId: string | null) => {
     if (!songId) return null;
@@ -180,18 +190,52 @@ export default function GameplayView({
   return (
     <>
       <div className="grid grid-cols-5 gap-4 w-screen">
-        <div className="col-span-1 p-4 border-r">
-          {currentPlayers?.map((player: Player) => (
-            <div key={player.id} className="flex flex-row justify-between"  style={{ fontWeight: player.id === currentPlayerId ? 'bold' : 'normal' }}>
-                <div>
-                    {player.name}
-                </div>
-                <div>
-                    {player.deck.length - 1}
-                </div>
-            </div>
-          ))}
-        </div>
+        {/* SIDOPANELEN */}
+        <div className="col-span-1 p-4 border-r overflow-y-auto space-y-4">
+  {currentPlayers?.map(player => {
+    const isOpen = expanded.has(player.id);
+    return (
+      <div key={player.id}>
+        {/* klickrad */}
+        <button
+          onClick={() => toggleExpand(player.id)}
+          className={`
+            flex w-full items-center justify-between mb-1 rounded
+            text-left cursor-pointer select-none transition-colors
+            hover:bg-neutral-800/60
+            ${player.id === currentPlayerId ? "font-bold text-lime-300" : ""}
+          `}
+        >
+          {/* namn + poäng till vänster */}
+          <span className="flex-1">
+            {player.name}
+          </span>
+          <span className="mr-1">{player.deck.length - 1}</span>
+
+          {/* pilen */}
+          <ChevronDown
+            size={18}
+            className={`
+              transition-transform duration-200
+              ${isOpen ? "rotate-180" : ""}
+            `}
+          />
+        </button>
+
+        {/* deck syns bara när raden är öppen */}
+        {isOpen && (
+          <div className="ml-2 flex flex-wrap gap-1 pb-2">
+            {player.deck.map(song => (
+              <GameCard key={song.id} song={song} isRevealed small />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  })}
+</div>
+
+
         <div className="col-span-4 p-6">
           <div className="flex flex-col items-center gap-4">
             <p className="neon-tubes-styling text-8xl">{currentPlayers?.find((p) => currentPlayerId === p.id)?.name}'s turn</p>

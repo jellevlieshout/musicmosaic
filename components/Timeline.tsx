@@ -5,9 +5,10 @@ import { Plus } from "lucide-react"
 import { useState } from "react"
 
 interface TimelineProps {
-    currentSong: Song | undefined,
+    currentSong?: Song | undefined,
     deck: Song[] | undefined,
-    confirmPlacement: (correct: boolean) => void,
+    confirmPlacement?: (correct: boolean) => void,
+    readOnly?: boolean,
 }
 
 interface InsertLocation {
@@ -21,6 +22,7 @@ export default function Timeline({
     currentSong,
     deck,
     confirmPlacement,
+    readOnly = false,
 } : TimelineProps) {
 
     const [insertLocation, setIntsertLocation] = useState<InsertLocation | null>(null)
@@ -39,7 +41,8 @@ export default function Timeline({
     }
 
     function confirm() {
-        confirmPlacement(checkPlacement())
+        if (confirmPlacement)
+            confirmPlacement(checkPlacement())
         setIntsertLocation(null)
     }
 
