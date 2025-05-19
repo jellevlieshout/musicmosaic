@@ -259,7 +259,7 @@ export default function GameplayView({
                             </Button>
                         ) : (
                             <Button size="sm" variant={"secondary"} onClick={playClick}>
-                                <p className="neon-tubes-styling">play again</p>
+                                <p className="neon-tubes-styling">play music</p>
                             </Button>
                         )}
                     </div>
