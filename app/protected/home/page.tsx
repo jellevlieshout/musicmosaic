@@ -14,6 +14,23 @@ export default function HomePresenter() {
   const isSpotifyConnected = !!accessToken;
 
   useEffect(() => {
+    // Check for authentication message
+    const searchParams = new URLSearchParams(window.location.search);
+    const message = searchParams.get('message');
+    if (message === 'spotify_auth_required') {
+      toast.error('Spotify authentication required. Please reconnect to continue.', {
+        duration: 4000,
+        position: 'top-center',
+        style: {
+          background: '#333',
+          color: '#fff',
+          padding: '16px',
+          borderRadius: '8px',
+        },
+      });
+      // Clear the message from URL
+      window.history.replaceState({}, '', '/protected/home');
+    }
     
     // Get the access token from the URL hash
     const hash = window.location.hash;

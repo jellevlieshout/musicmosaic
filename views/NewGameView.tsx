@@ -60,7 +60,10 @@ export default function NewGameView({
     if (currGameSettings && currGameSettings.gameLength) {
       setGameLength(currGameSettings.gameLength);
     }
-  }, [currGameSettings]);
+    if (locationProp && locationProp !== location) {
+      setLocation(locationProp);
+    }
+  }, [currGameSettings, locationProp]);
   
 
   

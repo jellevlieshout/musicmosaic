@@ -75,6 +75,12 @@ function NewGameSettingsContent() {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Clear the token and redirect to home
+          useSpotifyStore.getState().clearAccessToken();
+          router.push('/protected/home?message=spotify_auth_required');
+          return;
+        }
         throw new Error('Failed to fetch playlists');
       }
 
