@@ -28,19 +28,19 @@ export async function loadGameState(gameId: string | null): Promise<string> {
     if (!existing) throw new Error("Game not found");
     data = existing;
   } else {
-    /* New‑game – återanvänd rad om den inte är avslutad */
-    const { data: newGame, error: insertErr } = await supabase
-    .from("gameplay_states")
-    .insert({ game_finished: false })
-    .select()
-    .single();
+      const { data: newGame, error: insertErr } = await supabase
+        .from("gameplay_states")
+        .insert({ game_finished: false })
+        .select()
+        .single();
 
-    if (insertErr) throw insertErr;
-    if (!newGame) throw new Error("Failed to create new game");
+      if (insertErr) throw insertErr;
+      if (!newGame) throw new Error("Failed to create new game");
 
-    useGameplayStore.getState().resetModel();
-    data = newGame;
+      useGameplayStore.getState().resetModel();
+      data = newGame;
   }
+  
     
     // Update the Zustand store with the loaded state
     const { setPlaylist, seatPlayersInRandomOrder, setGameSettings, setGameHasStarted } = useGameplayStore.getState();

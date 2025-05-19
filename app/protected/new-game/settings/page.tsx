@@ -27,7 +27,6 @@ function NewGameSettingsContent() {
   const [location, setLocation] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [allowSteals, setAllowSteals] = useState(false);
-  const [songNameBonus, setSongNameBonus] = useState(false);
   const [gameLength, setGameLength] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -166,10 +165,6 @@ function NewGameSettingsContent() {
     setAllowSteals(newValue);
   };
 
-  const handleSongNameBonusChange = (newValue: boolean) => {
-    setSongNameBonus(newValue);
-  };
-
   const handleGameLengthChange = (newLength: string) => {
     setGameLength(newLength);
   };
@@ -183,7 +178,6 @@ function NewGameSettingsContent() {
     setGameSettings({
       location,
       allowSteals,
-      songNameBonus,
       gameLength
     });
     setPlaylist(selectedPlaylistData.songs);
@@ -202,7 +196,6 @@ function NewGameSettingsContent() {
       onLocationChange={handleLocationChange}
       onPlaylistSelect={handlePlaylistSelect}
       onAllowStealsChange={handleAllowStealsChange}
-      onSongNameBonusChange={handleSongNameBonusChange}
       onGameLengthChange={handleGameLengthChange}
       onSubmit={handleSubmit}
       isFormValid={isFormValid}

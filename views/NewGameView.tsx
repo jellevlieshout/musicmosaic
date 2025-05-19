@@ -24,7 +24,6 @@ interface NewGameViewProps {
   onLocationChange: (location: string) => void;
   onPlaylistSelect: (playlistId: string) => void;
   onAllowStealsChange: (allowSteals: boolean) => void;
-  onSongNameBonusChange: (songNameBonus: boolean) => void;
   onGameLengthChange: (gameLength: string) => void;
   onSubmit: () => void;
   isFormValid: boolean;
@@ -38,7 +37,6 @@ export default function NewGameView({
   onLocationChange,
   onPlaylistSelect,
   onAllowStealsChange,
-  onSongNameBonusChange,
   onGameLengthChange,
   onSubmit,
   isFormValid,
@@ -47,7 +45,6 @@ export default function NewGameView({
   const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
-  const [songNameBonus, setSongNameBonus] = useState(currGameSettings?.songNameBonus ?? false);
   const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
 
   useEffect(() => {
@@ -56,9 +53,6 @@ export default function NewGameView({
     }
     if (currGameSettings && currGameSettings.allowSteals) {
       setAllowSteals(currGameSettings.allowSteals);
-    }
-    if (currGameSettings && currGameSettings.songNameBonus) {
-      setSongNameBonus(currGameSettings.songNameBonus);
     }
     if (currGameSettings && currGameSettings.gameLength) {
       setGameLength(currGameSettings.gameLength);
@@ -129,32 +123,6 @@ export default function NewGameView({
             onCheckedChange={(checked) => {
               setAllowSteals(checked);
               onAllowStealsChange(checked);
-            }}
-            disabled={gameStarted}
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex flex-row gap-2 items-center">
-            <Label className="neon-tubes-styling">Song name bonus?</Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info size={16} color="#3b3b3b"></Info>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-sm">
-                    If activated, players can earn extra points for correctly guessing the name of the selected track
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <Switch
-            checked={songNameBonus}
-            onCheckedChange={(checked) => {
-              setSongNameBonus(checked);
-              onSongNameBonusChange(checked);
             }}
             disabled={gameStarted}
           />
