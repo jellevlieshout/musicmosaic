@@ -29,6 +29,7 @@ function NewGameSettingsContent() {
   const [allowSteals, setAllowSteals] = useState(false);
   const [gameLength, setGameLength] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isPlaylistValid, setIsPlaylistValid] = useState(false);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(true);
 
@@ -37,7 +38,7 @@ function NewGameSettingsContent() {
   const { gameId } = useHitsterPersistence(gameIdParam);
 
   const accessToken = useSpotifyStore((state) => state.accessToken);
-  const { setPlaylist, setGameSettings, initializaPlayerDecks, setGameHasStarted, gameHasStarted, gameSettings } = useGameplayStore();
+  const { setPlaylist, setGameSettings, initializaPlayerDecks, setGameHasStarted, gameHasStarted, gameSettings, currentPlayers } = useGameplayStore();
 
   useEffect(() => {
     if (accessToken) {
@@ -46,6 +47,10 @@ function NewGameSettingsContent() {
       fetchUserPlaylists();
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    validatePlaylist();
+  }, [selectedPlaylist, gameLength]);
 
   useEffect(() => {
     validateForm();
@@ -121,6 +126,17 @@ function NewGameSettingsContent() {
     setIsFormValid(isValid);
   };
 
+  const validatePlaylist = () => {
+    const selectedPlaylistData = playlists.find(p => p.id === selectedPlaylist);
+    let playlistLengthCheck = true;
+    if (selectedPlaylistData?.songs && currentPlayers) {
+        playlistLengthCheck = selectedPlaylistData?.songs?.length > +gameLength * currentPlayers?.length
+    } else {
+        playlistLengthCheck = false;
+    }
+    setIsPlaylistValid(playlistLengthCheck);
+  };
+
   const handleLocationChange = (newLocation: string) => {
     setLocation(newLocation);
   };
@@ -170,7 +186,7 @@ function NewGameSettingsContent() {
   };
 
   const handleSubmit = () => {
-    if (!gameId || !isFormValid) return;
+    if (!gameId || !isFormValid || !isPlaylistValid) return;
 
     const selectedPlaylistData = playlists.find(p => p.id === selectedPlaylist);
     if (!selectedPlaylistData) return;
@@ -199,6 +215,7 @@ function NewGameSettingsContent() {
       onGameLengthChange={handleGameLengthChange}
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
+      isPlaylistValid={isPlaylistValid}
       gameStarted={gameHasStarted}
     />
   );

@@ -27,6 +27,7 @@ interface NewGameViewProps {
   onGameLengthChange: (gameLength: string) => void;
   onSubmit: () => void;
   isFormValid: boolean;
+  isPlaylistValid: boolean;
   gameStarted: boolean;
 }
 
@@ -40,12 +41,14 @@ export default function NewGameView({
   onGameLengthChange,
   onSubmit,
   isFormValid,
+  isPlaylistValid,
   gameStarted
 }: NewGameViewProps) {
   const [location, setLocation] = useState(currGameSettings?.location ?? '');
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [allowSteals, setAllowSteals] = useState(currGameSettings?.allowSteals ?? false);
   const [gameLength, setGameLength] = useState(currGameSettings?.gameLength ?? '');
+  const [badPlaylist, setBadPlaylist] = useState(false);
 
   useEffect(() => {
     if (currGameSettings && currGameSettings.location) {
@@ -156,7 +159,11 @@ export default function NewGameView({
                 </SelectItem>
             </SelectContent>
           </Select>
+          {!isPlaylistValid && <div className='flex flex-row justify-between'>
+                <p className='text-xs'>Playlist not long enough for selected game length!</p>
+            </div>}
         </div>
+
         <div className='flex flex-row justify-between'>
             <Link href={`/protected/new-game/players?gameId=${gameId}`}>
                 <Button
@@ -169,8 +176,8 @@ export default function NewGameView({
 
             {!gameStarted && <Button
                 onClick={onSubmit}
-                disabled={!isFormValid}
-                className={`${isFormValid ? 'text-black' : 'opacity-50'}`}
+                disabled={!isFormValid && !isPlaylistValid}
+                className={`${isFormValid && isPlaylistValid ? 'text-black' : 'opacity-50'}`}
             >
                 Start →
             </Button>}
@@ -180,6 +187,7 @@ export default function NewGameView({
               </Button>
             </Link>}
         </div>
+
         
       </div>
     </div>
